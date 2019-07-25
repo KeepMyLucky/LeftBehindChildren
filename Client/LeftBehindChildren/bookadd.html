@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-content {
+				margin-top: 15px;
+			}
+
+			.tips {
+				font-size: 20px;
+				/* font-weight: bold; */
+			}
+
+			#isbn,
+			#bookname,
+			#author {
+				width: 200px;
+				height: 25px;
+				font-size: 20px;
+				margin-bottom: 8px;
+				padding: 8px 7px;
+				text-align: center;
+			}
+
+			img {
+				margin-left: 50px;
+				border: 1px solid #128EF2;
+				width: 150px;
+				height: 130px;
+				border-radius: 10px;
+			}
+
+			#yeah {
+				position: relative;
+				margin-top: -15px;
+				width: 100%;
+				height: 35px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">图书添加</h1>
+		</header>
+		<div class="mui-content">
+			<label class="tips">ISBN:</label><input id="isbn" placeholder="ISBN" class="specific" type="text" /><br />
+			<label class="tips">书&nbsp;名:</label><input id="bookname" placeholder="图书名" class="specific" type="text" /><br />
+			<label class="tips">作&nbsp;者:</label><input id="author" placeholder="作者" class="specific" type="text" /><br />
+			<label class="tips">封&nbsp;面:</label><br /><img id="bookface" src="img/add.png" /> <br />
+			<label class="tips">图书概述:</label><textarea id="overview" placeholder="对本书的理解"></textarea><br />
+			<button id="yeah" type="button">确认提交</button>
+		</div>
+		<script src="js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			function checkInput() {
+				if (document.getElementById("isbn").value.replace(/(^\s+)|(\s+$)/g, "").length==0) {
+					alert("ISBN不能为空");
+					document.getElementById("isbn").focus();
+					return false;
+				}
+				if (document.getElementById("bookname").value.replace(/(^\s+)|(\s+$)/g, "").length==0) {
+					alert("书名不能为空");
+					document.getElementById("bookname").focus();
+					return false;
+				}
+				if (document.getElementById("author").value.replace(/(^\s+)|(\s+$)/g, "").length==0) {
+					alert("作者不能为空");
+					document.getElementById("author").focus();
+					return false;
+				}
+				if (document.getElementById("overview").value.replace(/(^s*)|(s*$)/g, "").length==0) {
+					alert("概述不能为空");
+					document.getElementById("overview").focus();
+					return false;
+				}
+				return true;
+			}
+			mui.plusReady(function() {
+				document.getElementById('bookface').addEventListener('tap', function() {
+					if (mui.os.plus) {
+						var a = [{
+							title: '拍照'
+						}, {
+							title: '从手机相册选择'
+						}];
+						plus.nativeUI.actionSheet({
+							title: '选择图片',
+							cancel: '取消',
+							buttons: a
+						}, function(b) {
+							switch (b.index) {
+								case 0:
+									break;
+								case 1:
+									//拍照
+									getImages();
+									break;
+								case 2:
+									//打开相册
+									selectPicture();
+									break;
+								default:
+									break;
+							}
+						}, false);
+					}
+				});
+				//拍照
+				function getImages() {
+					var c = plus.camera.getCamera();
+					c.captureImage(function(e) {
+						plus.io.resolveLocalFileSystemURL(e, function(entry) {
+							var imgSrc = entry.toLocalURL(); //拿到图片路径
+							var bookface = document.getElementById("bookface");
+							bookface.src = imgSrc;
+						}, function(e) {
+							console.log("读取拍照文件错误：" + e.message);
+						});
+					}, function(s) {
+						console.log("error" + s);
+					}, {
+						filename: "_doc/camera/"
+					})
+				}
+				// 从相册中选择图片 
+				function selectPicture() {
+					plus.gallery.pick(function(path) {
+						//alert("Success: " + path);
+						var bookface = document.getElementById("bookface");
+						bookface.src = path;
+					}, function(err) {
+						alert("Failed: " + err.message);
+					});
+				}
+			});
+			
+			// 创建上传任务
+			function createUpload(path) {
+				var isbn = document.getElementById("isbn").value;
+				var bookname = document.getElementById("bookname").value;
+				var author = document.getElementById("author").value;
+				var overview = document.getElementById("overview").value;
+				var link = localStorage.getItem("link");
+				var task = plus.uploader.createUpload(link + "/Book/addInfo.do", {
+						method: "POST",
+						blocksize: 204800,
+						priority: 100
+					},
+					function(t, status) {
+						// 上传完成
+						if (status == 404) {
+							//alert("上传成功: " + t.url);
+							mui.toast("添加成功");
+							plus.nativeUI.closeWaiting();
+							location.reload();
+						}
+						//if(status == 200) {
+						// 	 alert("上传成功: " + t.url);
+						//}
+						else {
+							alert("上传失败: " + status);
+						}
+					}
+				);
+				task.addFile(path, {
+					key: "bookface.jpg"
+				});
+				task.addData("isbn", isbn);
+				task.addData("bookname", bookname);
+				task.addData("author", author);
+				task.addData("overview", overview);
+				task.start();
+				plus.nativeUI.showWaiting();
+			}
+			
+			//开始上传
+			document.getElementById("yeah").addEventListener('tap', function() {
+				var state = checkInput();
+				if (state == true) {
+					createUpload(bookface.src);
+				} else {
+					mui.toast("添加图书失败");
+				}
+			})
+		</script>
+	</body>
+
+</html>

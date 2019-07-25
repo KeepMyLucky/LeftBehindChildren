@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+ 
+
+<mapper namespace="com.zc.dao.AdminDao" >
+
+  <resultMap id="AdminMap" type="com.zc.model.Admin" >
+
+    <id column="username" property="username" jdbcType="VARCHAR" />
+
+    <result column="password" property="password" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  
+
+  <sql id="Base_Column_List" >
+
+    username, password
+
+  </sql>
+
+  
+  <select id="selectByIdAndPassword" resultMap="AdminMap" parameterType="com.zc.model.Admin" >
+
+    select * from admin
+
+    where username = #{username} and password = #{password}
+
+  </select>
+  
+  <resultMap id="UserMap" type="com.zc.model.User" >
+
+    <id column="uid" property="uid" jdbcType="VARCHAR" />
+
+    <result column="username" property="username" jdbcType="VARCHAR" />
+
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    
+    <result column="level" property="level" jdbcType="VARCHAR" />
+    
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+
+  </resultMap>
+  
+  <select id="getUserListPage" resultMap="UserMap"  parameterType="com.zc.model.User" >
+    select * from user		
+    <where>
+    <if test="uid!=null and uid!=''">
+    uid like concat(concat('%',#{uid}),'%')
+    </if> 				
+    <if test="username!=null and username!=''"> 
+    and username like concat(concat('%',#{username}),'%')
+    </if>							
+    </where>
+    limit #{offset},#{pageSize}
+  </select>
+  
+  <select id="getUserListNumber" resultType="java.lang.Integer">
+    select count(1) from user		
+    <where>
+    <if test="uid!=null and uid!=''">
+    uid like concat(concat('%',#{uid}),'%')
+    </if> 				
+    <if test="username!=null and username!=''"> 
+    and username like concat(concat('%',#{username}),'%')
+    </if>							
+    </where>
+  </select>
+  
+   <delete id="deleteUserByUid" parameterType="com.zc.model.User" >
+
+    delete from user
+
+    where uid = #{uid}
+
+  </delete>
+  
+    <update id="updateUser" parameterType="com.zc.model.User" >
+
+    update user
+
+    <set>
+
+      <if test="username != null" >
+
+        username = #{username,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="password != null" >
+
+        password = #{password,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="level != null" >
+
+        level = #{level,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="avatar != null" >
+
+        avatar = #{avatar,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where uid = #{uid}
+
+  </update>
+  
+   <resultMap id="DynamicMap" type="com.zc.model.Dynamic" >
+
+    <id column="did" property="did" jdbcType="VARCHAR" />
+    
+    <result column="uid" property="uid" jdbcType="VARCHAR" />
+    
+    <result column="timestamp" property="timestamp" jdbcType="VARCHAR" />
+    
+    <result column="details" property="details" jdbcType="VARCHAR" />
+    
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
+
+  </resultMap>
+  
+  <select id="getDynamicListPage" resultMap="DynamicMap"  parameterType="com.zc.model.Dynamic" >
+    select * from dynamic	
+    <where>
+    <if test="did!=null and did!=''">
+    did like concat(concat('%',#{did}),'%')
+    </if> 				
+    <if test="uid!=null and uid!=''"> 
+    and uid like concat(concat('%',#{uid}),'%')
+    </if>							
+    </where>			
+    limit #{offset},#{pageSize}
+  </select>
+  
+   <select id="getDynamicListNumber" resultType="java.lang.Integer">
+    select count(1) from dynamic		
+    <where>
+    <if test="did!=null and did!=''">
+    did like concat(concat('%',#{did}),'%')
+    </if> 				
+    <if test="uid!=null and uid!=''"> 
+    and uid like concat(concat('%',#{uid}),'%')
+    </if>							
+    </where>
+  </select>
+  
+  <delete id="deleteDynamicByDid" parameterType="com.zc.model.Dynamic" >
+
+    delete from dynamic
+
+    where did = #{did}
+
+  </delete>
+  
+   <update id="updateDynamic" parameterType="com.zc.model.Dynamic" >
+
+    update dynamic
+
+    <set>
+
+      <if test="uid != null" >
+
+        uid = #{uid,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="timestamp != null" >
+
+        timestamp = #{timestamp,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="details != null" >
+
+        details = #{details,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="pic != null" >
+
+        pic = #{pic,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where did = #{did}
+
+  </update>
+  
+   <resultMap id="BookMap" type="com.zc.model.Book" >
+
+    <id column="isbn" property="isbn" jdbcType="VARCHAR" />
+
+    <result column="bookname" property="bookname" jdbcType="VARCHAR" />
+
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    
+    <result column="bookface" property="bookface" jdbcType="VARCHAR" />
+    
+    <result column="overview" property="overview" jdbcType="VARCHAR" />
+
+  </resultMap>
+  
+  <select id="getBookListPage" resultMap="BookMap"  parameterType="com.zc.model.Book" >
+    select * from book	
+    <where>
+    <if test="isbn!=null and isbn!=''">
+    isbn like concat(concat('%',#{isbn}),'%')
+    </if> 				
+    <if test="keyword!=null and keyword!=''"> 
+    and keyword like concat(concat('%',#{keyword}),'%')
+    </if>							
+    </where>			
+    limit #{offset},#{pageSize}
+  </select>
+  
+   <select id="getBookListNumber" resultType="java.lang.Integer">
+    select count(1) from book		
+    <where>
+    <if test="isbn!=null and isbn!=''">
+    isbn like concat(concat('%',#{isbn}),'%')
+    </if> 				
+    <if test="keyword!=null and keyword!=''"> 
+    and keyword like concat(concat('%',#{keyword}),'%')
+    </if>							
+    </where>
+  </select>
+  
+   <update id="updateBook" parameterType="com.zc.model.Book" >
+
+    update book
+
+    <set>
+
+      <if test="bookname != null" >
+
+        bookname = #{bookname,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="author != null" >
+
+        author = #{author,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="bookface != null" >
+
+        bookface = #{bookface,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="overview != null" >
+
+        overview = #{overview,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where isbn = #{isbn}
+
+  </update>
+  
+  <delete id="deleteBookByIsbn" parameterType="com.zc.model.Book" >
+
+    delete from book
+
+    where isbn = #{isbn}
+
+  </delete>
+  
+  <resultMap id="NumberMap" type="com.zc.model.overviewNumber" >
+
+    <result column="userNumber" property="userNumber" jdbcType="VARCHAR" />
+
+    <result column="dynamicNumber" property="dynamicNumber" jdbcType="VARCHAR" />
+    
+    <result column="commentNumber" property="commentNumber" jdbcType="VARCHAR" />
+    
+    <result column="bookNumber" property="bookNumber" jdbcType="VARCHAR" />
+
+  </resultMap>
+  
+  <select id="getOverViewNumber" resultMap="NumberMap">
+    select(
+    select count(*) as userNumber from user ,
+    select count(*) as dynamicNumber from dynamic,
+    select count(*) as commentNumber from comment ,
+    select count(*) as bookNumber from book
+    )
+  </select>
+  
+    <resultMap id="ScoreMap" type="com.zc.model.Score" >
+
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    
+    <result column="examtype" property="examtype" jdbcType="VARCHAR" />
+
+    <result column="classin" property="classin" jdbcType="VARCHAR" />
+
+    <result column="stuname" property="stuname" jdbcType="VARCHAR" />
+    
+    <result column="chinese" property="chinese" jdbcType="VARCHAR" />
+    
+    <result column="math" property="math" jdbcType="VARCHAR" />
+    
+    <result column="english" property="english" jdbcType="VARCHAR" />
+    
+    <result column="teachersay" property="teachersay" jdbcType="VARCHAR" />
+
+  </resultMap>
+  
+  <select id="getScoreListPage" resultMap="ScoreMap"  parameterType="com.zc.model.Score" >
+    select * from score	
+    <where>
+    <if test="examtype!=null and examtype!=''">
+    examtype like concat(concat('%',#{examtype}),'%')
+    </if> 				
+    <if test="classin!=null and classin!=''"> 
+    and classin like concat(concat('%',#{classin}),'%')
+    </if>
+    <if test="stuname!=null and stuname!=''"> 
+    and stuname like concat(concat('%',#{stuname}),'%')
+    </if>						
+    </where>			
+    limit #{offset},#{pageSize}
+  </select>
+  
+   <select id="getScoreListNumber" resultType="java.lang.Integer">
+    select count(1) from score		
+    <where>
+    <if test="examtype!=null and examtype!=''">
+    examtype like concat(concat('%',#{examtype}),'%')
+    </if> 				
+    <if test="classin!=null and classin!=''"> 
+    and classin like concat(concat('%',#{classin}),'%')
+    </if>
+    <if test="stuname!=null and stuname!=''"> 
+    and stuname like concat(concat('%',#{stuname}),'%')
+    </if>						
+    </where>
+  </select>
+  
+   <select id="getexamTypeList" resultType="String" >
+   
+    select examtype from score
+    
+  </select>
+  
+  <select id="getclassInList" resultType="String" >
+   
+    select classin from score
+    
+  </select>
+  
+  <update id="updateScore" parameterType="com.zc.model.Score" >
+
+    update score
+
+    <set>
+
+      <if test="examtype != null" >
+
+        examtype = #{examtype,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="classin != null" >
+
+        classin = #{classin,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="stuname != null" >
+
+        stuname = #{stuname,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="chinese != null" >
+
+        chinese = #{chinese,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="math != null" >
+
+        math = #{math,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="english != null" >
+
+        english = #{english,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="teachersay != null" >
+
+        teachersay = #{teachersay,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where id = #{id}
+
+  </update>
+  
+  <delete id="deleteScoreById" parameterType="com.zc.model.Score" >
+
+    delete from score
+
+    where id = #{id}
+
+  </delete>
+  
+</mapper>

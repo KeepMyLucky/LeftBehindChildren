@@ -1,0 +1,145 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=aGf0sLjv7DOonc61fINdATGez2d3O8xB"></script>
+		<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+		<!-- <script src="js/appConfig.js"></script> -->
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">地图</h1>
+		</header>
+		<style>
+			#allmap{
+				width: 100%;
+				height: 408px;
+				}
+            #begin{
+				margin-left:35%;
+				margin-right:30%;
+				}
+        </style>
+	</head>
+	<body>
+		<div class="mui-content">
+			<div id="allmap">
+				地图加载中...
+			</div>
+			<br />
+			<input type="text" placeholder="起点" id="start" />
+			<input type="text" placeholder="终点" id="end" />
+			<input type="button" value="开始行程" id="begin" />
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			var lng;
+			var lat;
+			var marker;
+			//存储实时gps定位坐标，用于查询实时轨迹
+			var arr = new Array();
+			var map;
+			mui.init();
+			//页面初始化gps定位，并将定位点作为地图中心
+			mui.plusReady(function() {
+				map = new BMap.Map("allmap"); //创建地图
+				getGPS();
+			});
+			//获取当前gps定位信息
+			function getGPS() {
+				//需要在mui框架的manifest.json文件中添加Geolocation位置信息模块          
+				plus.geolocation.getCurrentPosition(translatePoint, function(e) {
+					mui.toast("异常:" + e.message);
+				});
+			}
+
+			function translatePoint(position) {
+				var currentLon = position.coords.longitude;
+				var currentLat = position.coords.latitude;
+				var gpsPoint = new BMap.Point(currentLon, currentLat);
+				BMap.Convertor.translate(gpsPoint, 2, initMap); //坐标转换
+			}
+
+			function initMap(point) {
+				//清除上一次的gps定位图标
+				map.removeOverlay(marker);
+				lat = point.lat;
+				lng = point.lng;
+				map.addControl(new BMap.NavigationControl());
+				map.addControl(new BMap.ScaleControl());
+				map.addControl(new BMap.OverviewMapControl());
+				map.centerAndZoom(point, 15);
+				var marker = new BMap.Marker(point);
+				// 将标注添加到地图中
+				var label = new BMap.Label("我在这里", {
+					offset: new BMap.Size(-15, -25)
+				});
+				marker.setLabel(label);
+				// 创建标注
+				map.addOverlay(marker);
+				//添加事件
+				marker.addEventListener("click", function(e) {
+					var p = marker.getPosition(); //获取marker的位置信息
+					alert("我的位置是" + p.lng + "," + p.lat);
+					var geoc = new BMap.Geocoder();
+					var point = new BMap.Point(p.lng, p.lat);
+				    geoc.getLocation(point, function (rs) {
+						var addComp = rs.addressComponents;
+						alert(addComp.province + "-" + addComp.city + ", " + addComp.district + "-" + addComp.street + "-" + addComp.streetNumber);
+					});
+				});
+				//移除事件
+				//map.removeEventListener("click", showInfo);
+
+				//另一种图片标记方法
+				// 				var myIcon = new BMap.Icon("imgs/mouse.png", new BMap.Size(300, 157));
+				// 				marker = new BMap.Marker(point, {
+				// 					  icon: myIcon,
+				// 				})
+				// 				map.addOverlay(marker);
+				// 				sendGPS();
+			}
+			//建立起点自动完成的对象
+			var st = new BMap.Autocomplete({
+				"input": "start",
+				"location": map
+			});
+			//建立终点自动完成的对象
+			var st = new BMap.Autocomplete({
+				"input": "end",
+				"location": map
+			});
+			//点击开始行程            
+			document.getElementById("begin").addEventListener("tap", function() {
+				var p1 = document.getElementById("start").value;
+				var p2 = document.getElementById("end").value;
+				var driving = new BMap.DrivingRoute(map, {
+					renderOptions: {
+						map: map
+					}
+				});
+				driving.search(p1, p2);
+				//定时gps定位，并将数据发给后端存储
+				var t = self.setInterval('getGPS();', 5000);
+			})
+			//发送gps定位信息到后端
+			function sendGPS() {
+				mui.ajax(GET_GPS, {
+					data: {
+						lat: lat,
+						lng: lng,
+						random: Math.floor(999999999)
+					},
+					dataType: 'text',
+					type: 'post',
+					crossDomain: true,
+					success: function(data) {
+						var jsonarr = JSON.parse(data);
+						alert(jsonarr.msg);
+					}
+				})
+			}
+		</script>
+	</body>
+</html>

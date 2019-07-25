@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<script src="js/mui.min.js"></script>
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/function.css" />
+	</head>
+
+	<body>
+
+		<header class="mui-bar mui-bar-nav">
+		    <h1 class="mui-title">我的空间</h1>
+		</header>
+		<div class="mui-content">
+			<ul id="userFunction" class="mui-table-view mui-grid-view mui-grid-9">
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="publishDynamic">
+						<span class="mui-icon mui-icon-pengyouquan"></span>
+						<div class="mui-media-body">发表动态</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="tel">
+						<span class="mui-icon mui-icon-phone"></span>
+						<div class="mui-media-body">联系我</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="dynamic">
+						<span class="mui-icon mui-icon-weixin"></span>
+						<div class="mui-media-body">动态</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="comment">
+						<span class="mui-icon mui-icon-email"><span class="mui-badge">5</span></span>
+						<div class="mui-media-body">收到留言</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="map">
+						<span class="mui-icon mui-icon-map"></span>
+						<div class="mui-media-body">地图</div>
+					</a>
+				</li>
+				<!-- <li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="scoreadd">
+						<img class="selficon" src="img/scoreadd.png" />
+						<div class="mui-media-body">成绩添加</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="bookadd" class="mui-icon">
+						<img class="selficon" src="img/bookadd.png" />
+						<div class="mui-media-body">图书添加</div>
+					</a>
+				</li> -->
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="scoreall" class="mui-icon">
+						<img class="selficon" src="img/scoreall.png" />
+						<div class="mui-media-body">成绩报告单</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+					<a id="chatrobot" class="mui-icon">
+						<img class="selficon" src="img/chatrobot.png" />
+						<div class="mui-media-body">小优聊天</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		
+		<script src="js/jquery.min.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			mui.init();
+			//获取用户权限
+			var link = localStorage.getItem("link");
+			var loginid = localStorage.getItem("uid");
+			mui.ajax(link + '/User/modify.do', {
+				data: {
+					id: loginid,
+				},
+				async: true,
+				dataType: 'json', //服务器返回json格式数据
+				type: 'post', //HTTP请求类型
+				timeout: 10000, //超时时间设置为10秒；
+				success: function(data) {
+					if (data.code == 1) {
+						userlevel = data.user.level;
+						if(userlevel==1){
+							var li1;
+							var li2;
+							li1 = '<a id="scoreadd">' +
+							     '<img class="selficon" src="img/scoreadd.png" />' +
+							     '<div class="mui-media-body">' + "成绩添加" + '</div>' +
+								 '</a>' ;
+						    li2 = '<a id="bookadd">' +
+						         '<img class="selficon" src="img/bookadd.png" />' +
+						         '<div class="mui-media-body">' + "图书添加" + '</div>' +
+						    	 '</a>' ;
+							    $("#userFunction").append('<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">' + li1 + '</li>');
+								$("#userFunction").append('<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">' + li2 + '</li>');
+							document.getElementById("scoreadd").addEventListener('tap', function() {
+								mui.openWindow({
+									url: 'scoreadd.html',
+									id: 'scoreadd',
+									show: {
+										autoShow: true, //页面loaded事件发生后自动显示，默认为true
+										aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+									},
+									waiting: {
+										autoShow: true, //自动显示等待框，默认为true
+										title: '正在加载中...', //等待对话框上显示的提示内容
+										options: {
+											width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+											height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+										}
+									}
+								})
+							})
+							document.getElementById("bookadd").addEventListener('tap', function() {
+								mui.openWindow({
+									url: 'bookadd.html',
+									id: 'bookadd',
+									show: {
+										autoShow: true, //页面loaded事件发生后自动显示，默认为true
+										aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+									},
+									waiting: {
+										autoShow: true, //自动显示等待框，默认为true
+										title: '正在加载中...', //等待对话框上显示的提示内容
+										options: {
+											width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+											height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+										}
+									}
+								})
+							})
+						}
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					console.log(type);
+					mui.toast("获取数据失败");
+				}
+			});
+			document.getElementById("publishDynamic").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'publishDynamic.html',
+					id: 'publishDynamic',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			})
+			document.getElementById("tel").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'tel.html',
+					id: 'tel',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			})
+			document.getElementById("comment").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'comment.html',
+					id: 'comment',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			})
+			document.getElementById("map").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'map.html',
+					id: 'map',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			})
+				document.getElementById("dynamic").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'dynamic.html',
+					id: 'dynamic',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			})
+			document.getElementById("scoreall").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'scoreall.html',
+					id: 'scoreall',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			})
+// 			document.getElementById("scoreadd").addEventListener('tap', function() {
+// 				mui.openWindow({
+// 					url: 'scoreadd.html',
+// 					id: 'scoreadd',
+// 					show: {
+// 						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+// 						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+// 					},
+// 					waiting: {
+// 						autoShow: true, //自动显示等待框，默认为true
+// 						title: '正在加载中...', //等待对话框上显示的提示内容
+// 						options: {
+// 							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+// 							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+// 						}
+// 					}
+// 				})
+// 			})
+// 			document.getElementById("bookadd").addEventListener('tap', function() {
+// 				mui.openWindow({
+// 					url: 'bookadd.html',
+// 					id: 'bookadd',
+// 					show: {
+// 						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+// 						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+// 					},
+// 					waiting: {
+// 						autoShow: true, //自动显示等待框，默认为true
+// 						title: '正在加载中...', //等待对话框上显示的提示内容
+// 						options: {
+// 							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+// 							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+// 						}
+// 					}
+// 				})
+// 			})
+			document.getElementById("chatrobot").addEventListener('tap', function() {
+				mui.openWindow({
+					url: 'chatrobot.html',
+					id: 'chatrobot',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

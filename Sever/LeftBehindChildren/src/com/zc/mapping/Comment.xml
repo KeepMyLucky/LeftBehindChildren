@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+ 
+
+<mapper namespace="com.zc.dao.CommentDao" >
+
+  <resultMap id="CommentMap" type="com.zc.model.Comment" >
+
+    <id column="cid" property="cid" jdbcType="VARCHAR" />
+    
+    <id column="did" property="did" jdbcType="VARCHAR" />
+    
+    <id column="uid" property="uid" jdbcType="VARCHAR" />
+    
+    <result column="details" property="details" jdbcType="VARCHAR" />
+    
+    <result column="timestamp" property="timestamp" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  
+
+  <sql id="Base_Column_List" >
+
+    cid, did, uid, details, timestamp
+
+  </sql>
+
+  
+
+  <select id="selectByPrimaryKey" resultMap="CommentMap" parameterType="com.zc.model.Comment" >
+
+    select
+
+    <include refid="Base_Column_List" />
+
+    from comment
+
+    where did = #{did}
+
+  </select>
+  
+  <select id="selectAllByPrimaryKey" resultMap="CommentMap" parameterType="com.zc.model.Comment" >
+
+    select
+
+    <include refid="Base_Column_List" />
+
+    from comment
+
+    where did = #{did}
+
+  </select>
+  
+
+  <delete id="deleteByPrimaryKey" parameterType="com.zc.model.Comment" >
+
+    delete from comment
+
+    where cid = #{cid}
+
+  </delete>
+
+
+  <delete id="deleteByDid" parameterType="com.zc.model.Comment" >
+
+    delete from comment
+
+    where did = #{did}
+
+  </delete>
+  
+
+  <insert id="insert" parameterType="com.zc.model.Comment" keyProperty="id">
+
+    insert into comment (cid, did, uid, details, timestamp)
+
+    values (#{cid,jdbcType=VARCHAR}, #{did,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, #{details,jdbcType=VARCHAR},#{timestamp,jdbcType=VARCHAR})
+
+  </insert>
+
+  
+
+  <insert id="insertSelective" parameterType="com.zc.model.Comment" >
+
+    insert into comment
+
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      
+      <if test="cid != null" >
+
+        cid,
+
+      </if>
+      
+      <if test="did != null" >
+
+        did,
+
+      </if>
+      
+      <if test="uid != null" >
+
+        uid,
+
+      </if>
+      
+      <if test="details != null" >
+
+        details,
+
+      </if>
+      
+      <if test="timestamp != null" >
+
+        timestamp,
+
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    
+      <if test="cid != null" >
+
+        #{cid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="did != null" >
+
+         #{did,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="uid != null" >
+
+         #{uid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="details != null" >
+
+        #{details,jdbcType=VARCHAR},
+
+      </if>
+      
+      
+      <if test="timestamp != null" >
+
+        #{timestamp,jdbcType=VARCHAR},
+
+      </if>
+      
+     </trim>
+
+  </insert>
+
+  
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zc.model.Comment" >
+
+    update comment
+
+    <set >
+    
+      <if test="cid != null" >
+
+        cid = #{cid,jdbcType=VARCHAR},
+
+      </if>
+    
+      <if test="did != null" >
+
+        did = #{did,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="uid != null" >
+
+        uid = #{uid,jdbcType=VARCHAR},
+
+      </if>
+            
+      <if test="details != null" >
+
+        details = #{details,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="timestamp != null" >
+
+        timestamp = #{timestamp,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where cid = #{cid}
+
+  </update>
+
+  
+
+  <update id="updateByPrimaryKey" parameterType="com.zc.model.Comment" >
+
+    update comment
+
+    set details = #{details,jdbcType=VARCHAR},
+        timestamp = #{timestamp,jdbcType=VARCHAR},
+        
+    where cid = #{cid}
+
+  </update>
+
+  
+
+  <select id="getAll" resultMap="CommentMap">
+
+  	select * from comment
+
+  </select>
+
+  
+
+</mapper>

@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>留守儿童管理</title>
+		<link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap-table.min.css">
+		<link rel="stylesheet" href="./css/user.css">
+	</head>
+		<body>
+			<!-- <table class="table table-bordered" id="usertable">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>用户名</th>
+						<th>密码</th>
+						<th>权限</th>
+						<th>头像</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>666</td>
+						<td>啊啊啊</td>
+						<td>呵呵呵</td>
+						<td>拉拉啊</td>
+						<td>呵呵呵</td>
+						<td>
+							<button type="button"
+								class="btn btn-warning" title="修改">
+								<i class="fa fa-clipboard"></i>
+							</button>
+							&nbsp;
+							<button type="button" class="btn btn-danger"
+								title="删除">
+								<i class="fa fa-trash"></i>
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<script src="./js/user.js"></script> -->
+			
+			<div class="panel-body form-group mySearch">
+			<div class="searchVal">
+			    <label>账号:</label>
+				<input type="text" class="form-control" id="search_uid" />
+			</div>
+			<div class="searchVal">
+				<label>昵称:</label>
+				<input type="text" class="form-control" id="search_username" />
+			</div>
+			<button class="btn btn-primary" id="search_btn">查询</button> 
+			</div>
+		<table id="mytab" class="table table-hover"></table>
+		
+		<div class="alert alert-warning" id="warningDiv" style="position:fixed; top:10px;left: 50%;display: none;z-index:9999">
+          <span id="warningMsg"></span>
+        </div>
+		
+    <!-- 模态框（Modal） -->
+<div class="modal fade" id="detailModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style='width:100%;margin-top:15%'>
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">用户详情</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+            <table class="table table-bordered messageTable" cellspacing="0" border="1">
+                                <thead></thead>
+                                <tbody id="mySapnTbody">
+                                <tr>
+                                    <td>账号：<span id="yhxx-uid" class="Sp"></span></td>
+                                    <td>用户名：<span id="yhxx-username"  class="Sp"></span></td>
+                                    <td>密码：<span id="yhxx-password"  class="Sp"></span></td>
+                                </tr>
+                                <tr>
+                                    <td>权限：<span id="yhxx-level"  class="Sp"></span></td>
+                                    <td>头像：<span id="yhxx-avatar"  class="Sp"></span></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                                
+                                <tbody id="myInputTbody" style="display:none">
+                                <tr>
+                                    <td>账号：<input id="yhxx-uidEdit" class="In" disabled="disabled" /></td>
+                                    <td>用户名：<input id="yhxx-usernameEdit"  class="In" /></td>
+                                    <td>密码：<input id="yhxx-passwordEdit"  class="In" /></td>
+                                </tr>
+                                <tr>
+                                    <td>权限：<input id="yhxx-levelEdit"  class="In" /></td>
+                                    <td>头像：<input id="yhxx-avatarEdit"  class="In" disabled="disabled" /></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                                
+                            </table>
+            </div>
+            <div class="modal-footer">
+                <div class="edit">
+                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                 <button id="editButton" type="button" class="btn btn-primary">编辑</button>
+                </div>
+                <div class="sure" style="display:none">
+                <button id="cancel" type="button" class="btn btn-default">取消</button>
+                <button id="sureButton" type="button" class="btn btn-primary">提交更改</button>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+    
+	</body>
+<script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="./vendor/bootstrap/js/bootstrap-table.min.js"></script>
+<script src="./vendor/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+
+<script type="text/javascript">
+jQuery.support.cors = true;//跨域
+//操作栏的格式化
+function actionFormatter(value, row, index) {
+    return "<a id='editSpan' style='color:#6495ED'>详情</a>&nbsp<a id='delSpan' style='color:#EE0000'>删除</a>"
+};
+window.operateEvents = {
+	    "click #editSpan": function (e, value, row, index) {
+	        viewDetail(row);
+	    },
+	    "click #delSpan": function (e, value, row, index) {
+	        alert(row.uid);
+	        delUser(row.uid);
+	    }
+};
+$('#mytab').bootstrapTable({
+	method : 'get',
+	contentType:'application/x-www-form-urlencoded; charset=UTF-8',//post请求需设置
+	dataType: 'json',
+	url : 'Admin/getUserListPage.do',//请求路径	
+	striped : true, //是否显示行间隔色	
+	pageNumber : 1, //初始化加载第一页	
+	pagination : true,//是否分页	
+	sidePagination : 'server',//server:服务器端分页|client：前端分页	
+	pageSize : 5,//单页记录数	
+	pageList : [ 5, 10, 20, 30 ],//可选择单页记录数
+	showRefresh : false,//刷新按钮
+	local: "zh-CN",//表格汉化
+	queryParams: '',
+	queryParams: function(params) { //上传服务器的参数
+		var temp = { 
+			/* //如果是在服务器端实现分页，limit、offset这两个参数是必须的		
+			limit: params.limit, // 每页显示数量		
+			offset: params.offset, // SQL语句起始索引	
+			page: (params.offset / params.limit) + 1, //当前页码   */
+			pageNumber: params.offset,    
+			pageSize: params.limit,
+			uid: $('#search_uid').val(),
+			username: $('#search_username').val(),
+			/* pageNumber: params.pageNumber,    
+			pageSize: params.pageSize, */
+		};
+		return temp;
+	},
+    responseHandler: function (res) {
+        return {
+            "total": res.total,//总页数
+            "rows": res.rows,//数据
+        };
+    },
+	columns: [
+		{
+			title: '账号',
+			field: 'uid',
+			sortable: true,
+		},
+		{
+			title: '昵称',
+			field: 'username',
+			sortable: true,
+		},
+		{
+			title: '密码',
+			field: 'password',
+		},
+		{
+			title: '权限',
+			field: 'level',	
+		},
+		{
+			title: '头像',
+			field: 'avatar',	
+		},
+		{
+			title: "操作",
+            field: "Button",
+            align: "center",
+            events: operateEvents,
+            formatter: actionFormatter
+		}
+	],
+});
+//删除
+delUser = function (userId) {
+	$.ajax({
+        url: 'Admin/delUser.do',
+        type: "post",
+        dataType: "json",
+        data: {
+            uid: userId
+        },
+        cache: false,
+        async: false,
+        success: function (res) {
+            if (res.code == 0) {
+                var pageNumber = $('#mytab').bootstrapTable('getOptions').pageNumber;
+                var pageSize = $('#mytab').bootstrapTable('getOptions').pageSize;
+                $("#mytab").bootstrapTable('refreshOptions',{pageNumber : pageNumber, pageSize: pageSize});
+                alertWarning("删除成功！");
+            } else {
+                alertWarning("删除失败！");
+            }
+        },
+        error: function () {
+            alertWarning("错误");
+        }
+    });
+}
+//详情页面
+viewDetail = function (row) {
+	//填充span
+	$('#yhxx-uid').html(row.uid);
+	$('#yhxx-username').html(row.username);
+	$('#yhxx-password').html(row.password);
+	$('#yhxx-level').html(row.level);
+	$('#yhxx-avatar').html(row.avatar);
+	//填充input
+	$("#yhxx-uidEdit").val(row.uid);
+	$("#yhxx-usernameEdit").val(row.username);
+	$("#yhxx-passwordEdit").val(row.password);
+	$("#yhxx-levelEdit").val(row.level);
+	$("#yhxx-avatarEdit").val(row.avatar);
+	
+	//alert(row.uid);
+	$("#detailModel").modal("show");
+}
+/* //value代表该列的值，row代表当前对象
+function formatSex(value, row, index) {
+	return value == 1 ? "男" : "女";
+	//或者 return row.sex == 1 ? "男" : "女";
+} */
+//编辑
+$('#editButton').click(function () {
+	$("#mySapnTbody,.edit").css("display","none");
+	$("#yhxx-uidEdit").val($('#yhxx-uid').html());
+	$("#yhxx-usernameEdit").val($('#yhxx-username').html());
+	$("#yhxx-passwordEdit").val($('#yhxx-password').html());
+	$("#yhxx-levelEdit").val($('#yhxx-level').html());
+	$("#yhxx-avatarEdit").val($('#yhxx-avatar').html());
+	$("#myInputTbody,.sure").css("display","");
+})
+//取消
+$('#cancel').click(function () {
+	$("#mySapnTbody,.edit").css("display","");
+	$("#myInputTbody,.sure").css("display","none");
+})
+//提交更改
+$('#sureButton').click(function () {
+	//alert( $("#yhxx-levelEdit").val());
+	levelTest($("#yhxx-levelEdit").val());
+})
+//查询按钮事件
+$('#search_btn').click(function() {
+	$('#mytab').bootstrapTable('refresh', {
+		url: 'Admin/getUserListPage.do'
+	}, );
+})
+//格式校验
+levelTest=function(level){
+	if(level=="0"||level=="1"){
+		$.ajax({
+	        url: 'Admin/updateUser.do',
+	        type: "post",
+	        dataType: "json",
+	        data: {
+	            uid: $("#yhxx-uidEdit").val(),
+	            username: $("#yhxx-usernameEdit").val(),
+	            password: $("#yhxx-passwordEdit").val(),
+	            level: $("#yhxx-levelEdit").val(),
+	            avatar: $("#yhxx-avatarEdit").val()
+	        },
+	        cache: false,
+	        async: false,
+	        //headers: {"content-type": "application/x-www-form-urlencoded", Authorization: token},
+	        success: function (res) {
+	            if (res.code === 0) {
+	            	$('#yhxx-uid').html($("#yhxx-uidEdit").val());
+	            	$('#yhxx-username').html($("#yhxx-usernameEdit").val());
+	            	$('#yhxx-password').html($("#yhxx-passwordEdit").val());
+	            	$('#yhxx-level').html($("#yhxx-levelEdit").val());
+	            	$('#yhxx-avatar').html($("#yhxx-avatarEdit").val());
+	                var pageNumber = $('#mytab').bootstrapTable('getOptions').pageNumber;
+	                var pageSize = $('#mytab').bootstrapTable('getOptions').pageSize;
+	                $("#mytab").bootstrapTable('refreshOptions',{pageNumber : pageNumber, pageSize: pageSize});
+	                $("#mySapnTbody,.edit").css("display","");
+	            	$("#myInputTbody,.sure").css("display","none");
+	                //$('#detailModel').modal('hide');
+	                alertWarning("更改成功!");
+	            } else {
+	            	alertWarning("更改失败!");
+	            }
+	        },
+	        error: function () {
+	            alertWarning("错误");
+	        }
+	    });
+	}else{
+		alertWarning("权限只能为0或1");
+		return false;
+	}
+}
+//警告
+alertWarning = function (message) {
+    $("#warningMsg").html(message);
+    $("#warningDiv").css("display", "");
+    setTimeout("$('#warningDiv').css('display','none')", 2000);
+}
+</script>
+
+</html>

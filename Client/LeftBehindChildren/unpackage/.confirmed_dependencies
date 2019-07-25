@@ -1,0 +1,83 @@
+{
+  "main.html": {
+    "resources": [
+      "css/main.css",
+      "img/shuijiao.jpg",
+      "img/muwu.jpg",
+      "img/yuantiao.jpg",
+      "img/cbd.jpg",
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ],
+    "refer": []
+  },
+  "index.html": {
+    "resources": [
+      "main.html",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "main.html",
+      "me.html",
+      "search.html",
+      "add.html",
+      "function.html"
+    ]
+  },
+  "me.html": {
+    "resources": [
+      "css/me.css",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "login.html",
+      "detail.html"
+    ]
+  },
+  "function.html": {
+    "refer": [
+      "publish.html",
+      "tel.html",
+      "comment.html",
+      "dynamic.html"
+    ],
+    "resources": []
+  },
+  "login.html": {
+    "refer": [
+      "reg.html",
+      "index.html"
+    ],
+    "resources": [
+      "css/login.css",
+      "css/mui.min.css"
+    ]
+  },
+  "reg.html": {
+    "refer": [
+      "login.html",
+      "index.html"
+    ],
+    "resources": []
+  },
+  "publish.html": {
+    "refer": [
+      "main.html"
+    ],
+    "resources": []
+  },
+  "dynamic.html": {
+    "resources": [
+      "%3C%\u003drequest.getContextPath()%%3E/upload/4bbb6f52-684f-40f7-be99-a7ae08af0cdb#IMG_20180520_171758.jpg"
+    ],
+    "refer": []
+  },
+  "detail.html": {
+    "refer": [
+      "me.html"
+    ],
+    "resources": []
+  }
+}

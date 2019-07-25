@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+ 
+
+<mapper namespace="com.zc.dao.ReplyDao" >
+
+  <resultMap id="ReplyMap" type="com.zc.model.Reply" >
+
+    <id column="rid" property="rid" jdbcType="VARCHAR" />
+    
+    <id column="cid" property="cid" jdbcType="VARCHAR" />
+    
+    <id column="uid" property="uid" jdbcType="VARCHAR" />
+    
+    <id column="ruid" property="ruid" jdbcType="VARCHAR" />
+    
+    <result column="replycontent" property="replycontent" jdbcType="VARCHAR" />
+    
+    <result column="timestamp" property="timestamp" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  
+
+  <sql id="Base_Column_List" >
+
+    rid, cid, uid, ruid, replycontent, timestamp
+
+  </sql>
+
+  
+
+  <select id="selectByPrimaryKey" resultMap="ReplyMap" parameterType="com.zc.model.Reply" >
+
+    select
+
+    <include refid="Base_Column_List" />
+
+    from reply
+
+    where rid = #{rid}
+
+  </select>
+  
+  <select id="selectAllByPrimaryKey" resultMap="ReplyMap" parameterType="com.zc.model.Reply" >
+
+    select
+
+    <include refid="Base_Column_List" />
+
+    from reply
+
+    where cid = #{cid}
+
+  </select>
+  
+
+  <delete id="deleteByPrimaryKey" parameterType="com.zc.model.Reply" >
+
+    delete from reply
+
+    where rid = #{rid}
+
+  </delete>
+  
+  
+  <delete id="deleteByCid" parameterType="com.zc.model.Reply" >
+
+    delete from reply
+
+    where cid = #{cid}
+
+  </delete>
+  
+  
+  <delete id="deleteByDid">
+
+    delete from reply
+
+    where cid in (select cid from comment where did = #{did})
+
+  </delete>      
+  
+
+  <insert id="insert" parameterType="com.zc.model.Reply" keyProperty="id">
+
+    insert into reply (rid, cid, uid, replycontent, timestamp)
+
+    values (#{rid,jdbcType=VARCHAR}, #{cid,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, #{replycontent,jdbcType=VARCHAR},#{timestamp,jdbcType=VARCHAR})
+
+  </insert>
+
+  
+
+  <insert id="insertSelective" parameterType="com.zc.model.Reply" >
+
+    insert into reply
+
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      
+      <if test="rid != null" >
+
+        rid,
+
+      </if>
+      
+      <if test="cid != null" >
+
+        cid,
+
+      </if>
+      
+      <if test="uid != null" >
+
+        uid,
+
+      </if>
+      
+      <if test="ruid != null" >
+
+        ruid,
+
+      </if>
+      
+      <if test="replycontent != null" >
+
+        replycontent,
+
+      </if>
+      
+      <if test="timestamp != null" >
+
+        timestamp,
+
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    
+      <if test="rid != null" >
+
+        #{rid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="cid != null" >
+
+         #{cid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="uid != null" >
+
+         #{uid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="ruid != null" >
+
+         #{ruid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="replycontent != null" >
+
+        #{replycontent,jdbcType=VARCHAR},
+
+      </if>
+      
+      
+      <if test="timestamp != null" >
+
+        #{timestamp,jdbcType=VARCHAR},
+
+      </if>
+      
+     </trim>
+
+  </insert>
+
+  
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zc.model.Reply" >
+
+    update reply
+
+    <set >
+    
+      <if test="rid != null" >
+
+        rid = #{rid,jdbcType=VARCHAR},
+
+      </if>
+    
+      <if test="cid != null" >
+
+        cid = #{cid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="uid != null" >
+
+        uid = #{uid,jdbcType=VARCHAR},
+
+      </if>
+            
+      <if test="replycontent != null" >
+
+        replycontent = #{replycontent,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="timestamp != null" >
+
+        timestamp = #{timestamp,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where rid = #{rid}
+
+  </update>
+
+  
+
+  <update id="updateByPrimaryKey" parameterType="com.zc.model.Reply" >
+
+    update reply
+
+    set replycontent = #{replycontent,jdbcType=VARCHAR},
+        timestamp = #{timestamp,jdbcType=VARCHAR},
+        
+    where rid = #{rid}
+
+  </update>
+
+  
+
+  <select id="getAll" resultMap="ReplyMap">
+
+  	select * from reply
+
+  </select>
+
+  
+
+</mapper>

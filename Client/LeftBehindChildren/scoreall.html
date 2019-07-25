@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<style>
+			body {
+				font-family: arial;
+			}
+
+			table {
+				border: 1px solid #ccc;
+				width: 88%;
+				margin: 0;
+				padding: 0;
+				border-collapse: collapse;
+				border-spacing: 0;
+				margin: 0 auto;
+			}
+
+			table tr {
+				border: 1px solid #ddd;
+				padding: 5px;
+			}
+
+			table th,
+			table td {
+				padding: 10px;
+				text-align: center;
+				font-size: 10px;
+			}
+
+			table th {
+				text-transform: uppercase;
+				font-size: 13px;
+				letter-spacing: 1px;
+			}
+
+			@media screen and (max-width: 600px) {
+				table {
+					border: 0;
+				}
+
+				table thead {
+					display: none;
+				}
+
+				table tr {
+					margin-bottom: 10px;
+					display: block;
+					border-bottom: 2px solid #ddd;
+				}
+
+				table td {
+					display: block;
+					text-align: right;
+					font-size: 13px;
+					border-bottom: 1px dotted #ccc;
+				}
+
+				table td:last-child {
+					border-bottom: 0;
+				}
+
+				table td:before {
+					content: attr(data-label);
+					float: left;
+					text-transform: uppercase;
+					font-weight: bold;
+				}
+			}
+			#scorealltable{
+				margin-top: 10px;
+			}
+			.chart {
+				height: 200px;
+				margin: 0px;
+				padding: 0px;
+			}
+
+			h5 {
+				margin-top: 30px;
+				font-weight: bold;
+			}
+
+			h5:first-child {
+				margin-top: 15px;
+			}
+			
+			.searchVal{
+				width: 98%;
+				height: 36px;
+				margin-left: 1%;
+				margin-top: 3px;
+				margin-bottom: 3px;
+			}
+			
+			.myButton{
+				width: 10%;
+				height: 35px;
+				font-size: 10px;
+			}
+			
+			#classIn,#stuname{
+				width: 38%;
+				height: 35px;
+				font-size: 10px;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">成绩报告单</h1>
+		</header>
+		<div class="mui-content">
+			
+			<div class="searchVal">
+				<select id="classIn">
+					<option value="">所在班级</option>
+				</select>
+				<input id="stuname" type="text" placeholder="请输入学生姓名" />
+				<button type="button" id="btn_search" class="myButton">搜索</button>
+				<button type="button" id="btn_reset"  class="myButton">清空</button>
+			</div>
+			
+			<table id="scorealltable">
+				<thead>
+					<tr>
+						<th>学生姓名</th>
+						<th>考试类型</th>
+						<th>所在班级</th>
+						<th>语文</th>
+						<th>数学</th>
+						<th>英语</th>
+						<th>教师评语</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="stuInfo">
+						<td data-label="学生姓名">小李</td>
+						<td data-label="考试类型">期末考试</td>
+						<td data-label="所在班级">三年级三班</td>
+						<td data-label="语文成绩">99</td>
+						<td data-label="数学成绩">98</td>
+						<td data-label="英语成绩">96</td>
+						<td data-label="教师评语">小明努力上进，加油</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<table id="stuScoreTable" style="display: none;">
+				<thead>
+					<tr>
+						<th>学生姓名</th>
+						<th>考试类型</th>
+						<th>所在班级</th>
+						<th>语文</th>
+						<th>数学</th>
+						<th>英语</th>
+						<th>教师评语</th>
+					</tr>
+				</thead>
+				<tbody id="stuScore">		
+					
+				</tbody>
+			</table>
+
+			<div class="mui-content-padded">
+				<!-- <h5>柱图示例</h5>
+				<div class="chart" id="barChart"></div>
+				<h5>线图示例</h5>
+				<div class="chart" id="lineChart"></div>
+				<h5>饼图示例</h5>
+				<div class="chart" id="pieChart"></div> -->
+			</div>
+		</div>
+
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery.min.js"></script>
+		<script src="js/echarts-all.js"></script>
+		<script type="text/javascript">
+			/* jQuery.support.cors = true;//跨域
+			//关键字检索
+			$("#btn_search").click(function() {
+				var txt = $("#stuname").val();
+				alert(txt);
+				if ($.trim(txt) != "") {
+					//其他学生成绩单隐藏，并显示包含检索内容的学生成绩信息显示
+					$(".stuInfo").hide().filter(":contains('" + txt + "')").show();
+				} else {
+					$(".stuInfo").show();
+				}
+			});
+			//重置
+			$("#btn_reset").click(function() {
+				$("#stuname").val("");alert("ok");
+				$(".stuInfo").show();
+			}); */
+			
+			document.getElementById("btn_search").addEventListener('tap', function() {
+				$("#scorealltable").css('display','none');
+						var classin = document.getElementById("classIn").value;
+						var stuname = document.getElementById("stuname").value;
+						var link=localStorage.getItem("link");
+						mui.ajax(link+'/Score/getstuScore.do', {
+							data: {
+								stuname: stuname,
+								classin: classin
+							},
+							dataType: 'json',
+							type: 'post',
+							timeout: 5000,
+							success: function(data) {
+								if (data.code == 1) {
+									$("#stuScoreTable").css("display","");
+									var html='';
+									alert(JSON.stringify(data.stuScores));
+									//var examtype, classin, stuname, chinese, math, english, teachersay;
+									mui.each(data.stuScores, function(index, item) {
+										html+= '<tr>' +
+										       '<td data-label="学生姓名">' + item.stuname + '</td>' +
+											   '<td data-label="考试类型">' + item.examtype + '</td>' +
+											   '<td data-label="所在班级">' + item.classin + '</td>' +
+											   '<td data-label="语文成绩">' + item.chinese + '</td>' +
+											   '<td data-label="数学成绩">' + item.math + '</td>' +
+											   '<td data-label="英语成绩">' + item.english + '</td>' +
+											   '<td data-label="教师评语">' + item.teachersay + '</td>' +
+											   '</tr>';
+									    //$("#stuScoreTable").append('<tr>' + tr + '</tr>');
+									});
+									stuScore.innerHTML=html;
+									mui.toast("查询成功");
+								} else {
+									$("#stuScoreTable").css("display","");
+									var html='';
+									html+=  '<tr>' +
+									        '<td>'+"未查询到数据"+'</td>' +
+											'<td>'+"未查询到数据"+'</td>' +
+											'<td>'+"未查询到数据"+'</td>' +
+											'<td>'+"未查询到数据"+'</td>' +
+											'<td>'+"未查询到数据"+'</td>' +
+											'<td>'+"未查询到数据"+'</td>' +
+											'<td>'+"未查询到数据"+'</td>' +
+											'</tr>';
+									stuScore.innerHTML=html;
+									mui.toast("未查询到数据");
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								console.log(type);
+								mui.toast("其他错误");
+							}
+						})
+			})
+			
+			document.getElementById("btn_reset").addEventListener('tap', function() {
+				$("#classIn").val("");
+				$("#stuname").val("");
+				$("#stuScoreTable").css("display","none");
+				$("#scorealltable").css("display","");
+			})
+			
+			//加载数据
+			addData();
+			mui.init({
+				pullRefresh: {
+					container: ".mui-content", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					down: {
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+						auto: false, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh, //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				}
+			});	
+			function addData() {
+				var link = localStorage.getItem("link");
+				
+				mui.ajax(link + '/Admin/getclassIn.do', {
+					dataType: 'json',
+					type: 'get',
+					timeout: 5000,
+					async: false,
+					success: function(res) {
+						if (res.code == 1) {
+							classInList = res.classInList;
+						}
+					},
+					error: function() {
+						mui.toast("加载失败");
+					}
+				})
+				//构造添加中的所属区域选择器
+				if (classInList.length > 0) {
+					for (var i = 0; i < classInList.length; i++) {
+						$("#classIn").append("<option value='" + classInList[i] + "'>" + classInList[i] + "</option>");
+						//$("#classin").append("<option value='" + classInList[i].xh + "'>" + classInList[i].kcmc + "</option>");
+					}
+				}
+				
+				mui.ajax(link + '/Score/getAll.do', {
+					dataType: 'json',
+					type: 'post',
+					timeout: 5000,
+					async: false,
+					success: function(data) {
+						if (data.code == 1) {
+							mui.each(data.scores, function(index, item) {
+								var tr;
+								tr = '<td data-label="学生姓名">' + item.stuname + '</td>' +
+									 '<td data-label="考试类型">' + item.examtype + '</td>' +
+									 '<td data-label="所在班级">' + item.classin + '</td>' +
+									 '<td data-label="语文成绩">' + item.chinese + '</td>' +
+									 '<td data-label="数学成绩">' + item.math + '</td>' +
+									 '<td data-label="英语成绩">' + item.english + '</td>' +
+									 '<td data-label="教师评语">' + item.teachersay + '</td>';
+								$("#scorealltable").append('<tr>' + tr + '</tr>');
+							});
+						}
+					},
+					error: function() {
+						mui.toast("加载失败");
+					}
+				})
+			}
+			function pulldownRefresh() {
+				location.reload();
+				setTimeout(function() {
+					mui('.mui-content').pullRefresh().endPulldown();
+					mui.toast("刷新成功");
+				}, 1500);
+			}
+
+			var getOption = function(chartType) {
+				var chartOption = chartType == 'pie' ? {
+					calculable: false,
+					series: [{
+						name: '访问来源',
+						type: 'pie',
+						radius: '65%',
+						center: ['50%', '50%'],
+						data: [{
+							value: 335,
+							name: '直接访问'
+						}, {
+							value: 310,
+							name: '邮件营销'
+						}, {
+							value: 234,
+							name: '联盟广告'
+						}, {
+							value: 135,
+							name: '视频广告'
+						}, {
+							value: 1548,
+							name: '搜索引擎'
+						}]
+					}]
+				} : {
+					legend: {
+						data: ['期中成绩', '期末成绩']
+					},
+					grid: {
+						x: 35,
+						x2: 10,
+						y: 30,
+						y2: 25
+					},
+					toolbox: {
+						show: false,
+						feature: {
+							mark: {
+								show: true
+							},
+							dataView: {
+								show: true,
+								readOnly: false
+							},
+							magicType: {
+								show: true,
+								type: ['line', 'bar']
+							},
+							restore: {
+								show: true
+							},
+							saveAsImage: {
+								show: true
+							}
+						}
+					},
+					calculable: false,
+					xAxis: [{
+						type: 'category',
+						data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+					}],
+					yAxis: [{
+						type: 'value',
+						splitArea: {
+							show: true
+						}
+					}],
+					series: [{
+						name: '期中成绩',
+						type: chartType,
+						data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+					}, {
+						name: '期末成绩',
+						type: chartType,
+						data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+					}]
+				};
+				return chartOption;
+			};
+			var byId = function(id) {
+				return document.getElementById(id);
+			};
+			var barChart = echarts.init(byId('barChart'));
+			barChart.setOption(getOption('bar'));
+			var lineChart = echarts.init(byId('lineChart'));
+			lineChart.setOption(getOption('line'));
+			var pieChart = echarts.init(byId('pieChart'));
+			pieChart.setOption(getOption('pie'));
+			byId("echarts").addEventListener('tap', function() {
+				var url = this.getAttribute('data-url');
+				plus.runtime.openURL(url);
+			}, false);
+			
+		</script>
+	</body>
+
+</html>

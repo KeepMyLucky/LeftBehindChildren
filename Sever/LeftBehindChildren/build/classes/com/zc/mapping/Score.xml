@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+ 
+
+<mapper namespace="com.zc.dao.ScoreDao" >
+
+  <resultMap id="ScoreMap" type="com.zc.model.Score" >
+
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    
+    <result column="examtype" property="examtype" jdbcType="VARCHAR" />
+
+    <result column="classin" property="classin" jdbcType="VARCHAR" />
+
+    <result column="stuname" property="stuname" jdbcType="VARCHAR" />
+    
+    <result column="chinese" property="chinese" jdbcType="VARCHAR" />
+    
+    <result column="math" property="math" jdbcType="VARCHAR" />
+    
+    <result column="english" property="english" jdbcType="VARCHAR" />
+    
+    <result column="teachersay" property="teachersay" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  
+
+  <sql id="Base_Column_List" >
+
+    id, examtype, classin, stuname, chinese, math, english, teachersay
+
+  </sql>
+
+  
+
+  <select id="selectByPrimaryKey" resultMap="ScoreMap" parameterType="com.zc.model.Score" >
+
+    select 
+
+    <include refid="Base_Column_List" />
+
+    from score
+
+    where id = #{id}
+
+  </select>
+  
+  
+
+  <delete id="deleteByPrimaryKey" parameterType="com.zc.model.Score" >
+
+    delete from score
+
+    where id = #{id}
+
+  </delete>
+
+  
+
+  <insert id="insert" parameterType="com.zc.model.Score" keyProperty="id">
+
+    insert into score (id, examtype, classin, stuname, chinese, math, english, teachersay)
+
+    values (#{id,jdbcType=VARCHAR}, #{examtype,jdbcType=VARCHAR}, #{classin,jdbcType=VARCHAR}, #{stuname,jdbcType=VARCHAR}, #{chinese,jdbcType=VARCHAR}, #{math,jdbcType=VARCHAR}, #{english,jdbcType=VARCHAR}, #{teachersay,jdbcType=VARCHAR})
+
+  </insert>
+
+  
+
+  <insert id="insertSelective" parameterType="com.zc.model.Score" >
+
+    insert into score
+
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+    
+      <if test="id != null" >
+
+        id,
+
+      </if>
+      
+      <if test="examtype != null" >
+
+        examtype,
+
+      </if>
+      
+      <if test="classin != null" >
+
+        classin,
+
+      </if>
+      
+       <if test="stuname != null" >
+
+        stuname,
+
+      </if>
+      
+      <if test="chinese != null" >
+
+        chinese,
+
+      </if>
+      
+      <if test="math != null" >
+
+        math,
+
+      </if>
+      
+      <if test="english != null" >
+
+        english,
+
+      </if>
+      
+      <if test="teachersay != null" >
+
+        teachersay,
+
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    
+      <if test="id != null" >
+
+        #{id,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="examtype != null" >
+
+        #{examtype,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="classin != null" >
+
+        #{classin,jdbcType=VARCHAR},
+
+      </if>
+      
+       <if test="stuname != null" >
+
+        #{stuname,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="chinese != null" >
+
+        #{chinese,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="math != null" >
+
+        #{math,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="english != null" >
+
+        #{english,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="teachersay != null" >
+
+        #{teachersay,jdbcType=VARCHAR},
+
+      </if>
+    </trim>
+
+  </insert>
+
+  
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zc.model.Score" >
+
+    update score
+
+    <set >
+
+      <if test="id != null" >
+
+        id = #{id,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="examtype != null" >
+
+        examtype = #{examtype,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="classin != null" >
+
+        classin = #{classin,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="stuname != null" >
+
+        stuname = #{stuname,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="chinese != null" >
+
+        chinese = #{chinese,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="math != null" >
+
+        math = #{math,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="english != null" >
+
+        english = #{english,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="teachersay != null" >
+
+        teachersay = #{teachersay,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where id = #{id}
+
+  </update>
+
+  
+
+  <update id="updateByPrimaryKey" parameterType="com.zc.model.Score" >
+
+    update score
+
+    set examtype = #{examtype,jdbcType=VARCHAR},
+
+        classin = #{classin,jdbcType=VARCHAR},
+        
+        stuname = #{stuname,jdbcType=VARCHAR},
+        
+        chinese = #{chinese,jdbcType=VARCHAR},
+        
+        math = #{math,jdbcType=VARCHAR},
+        
+        english = #{english,jdbcType=VARCHAR},
+        
+        teachersay = #{teachersay,jdbcType=VARCHAR},
+
+    where id = #{id}
+
+  </update>
+
+  
+
+  <select id="getAll" resultMap="ScoreMap">
+
+  	select * from score
+
+  </select>
+  
+   <select id="getstuScore" resultMap="ScoreMap" parameterType="com.zc.model.Score" >
+    select * from score	
+    <where>
+    <if test="classin!=null and classin!=''">
+    classin = #{classin}
+    </if> 				
+    <if test="stuname!=null and stuname!=''"> 
+    and stuname = #{stuname}
+    </if>					
+    </where>			
+  </select>
+  
+</mapper>

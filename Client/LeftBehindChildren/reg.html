@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/mui.min.js"></script>
+		<script src="js/zepto.js"></script>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="css/reg.css" />
+
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">注册</h1>
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id='account' type="number" class="mui-input-clear mui-input" placeholder="8位数字" onchange="checkUser()">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="6~15位可以为数字,字母,下划线">
+				</div>
+			</form>
+			<input type="text" id="showcheckresult" readonly="readonly" />
+			<div id="radio">
+			<label class="rolelab"><input name="role" type="radio" value="0" checked="checked" />家长</label>
+			&nbsp;&nbsp;&nbsp;
+			<label class="rolelab"><input name="role" type="radio" value="1" />教师</label>
+			</div>
+			<div class="mui-content-padded">
+				<button id='reg' type="button" class="mui-btn mui-btn-block mui-btn-primary">注册</button>
+			</div>
+		</div>
+		<script type="text/javascript" charset="utf-8">
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+			});
+			function checkUser(){
+				var link = "http://192.168.43.39:8888/LeftBehindChildren";
+				var uid = document.getElementById("account").value;
+				mui.ajax(link+'/User/findUserByUid.do', {
+					data: {
+						uid: uid,
+					},
+					dataType: 'json',
+					type: 'post',
+					timeout: 5000,
+					success: function(data) {
+						if (data.code == 1) {
+							mui.toast("该用户名已被使用");
+							document.getElementById("showcheckresult").value="该用户名已被使用";
+						} else {
+							mui.toast("该用户名可以使用");
+							document.getElementById("showcheckresult").value="该用户名可以使用";
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+						mui.toast("其他错误");
+					}
+				})
+			}
+			var reg = document.getElementById("reg");
+			reg.addEventListener('tap', function() {
+				//alert($("input[name='role']:checked").val());
+				var state = checkReg();
+				if (state == true) {
+					var uid = document.getElementById("account").value;
+					var password = document.getElementById("password").value;
+					var level = $("input[name='role']:checked").val();
+					var link = "http://192.168.43.39:8888/LeftBehindChildren";
+					mui.ajax(link+'/User/addInfo.do', {
+						data: {
+							uid: uid,
+							password: password,
+							level: level
+						},
+						dataType: 'json',
+						type: 'post',
+						timeout: 5000,
+						success: function(data) {
+							var msg = data;
+							if (msg.code == 1) {
+								localStorage.setItem("uid", uid);
+								localStorage.setItem("password",password);
+								localStorage.setItem("link",link);
+								mui.toast("注册成功");
+								mui.openWindow({
+									url: 'index.html',
+									id: 'index',
+									show: {
+										autoShow: true, //页面loaded事件发生后自动显示，默认为true
+										aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+									},
+									waiting: {
+										autoShow: true, //自动显示等待框，默认为true
+										title: '正在加载...', //等待对话框上显示的提示内容
+										options: {
+											width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+											height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+										}
+									}
+								})
+							} else {
+								mui.toast("注册失败");
+							}
+						},
+						error: function(xhr, type, errorThrown) {
+							console.log(type);
+							mui.toast("注册失败");
+						}
+					})
+				}
+			})
+
+			function checkReg() {
+				if (!document.getElementById("account").value.match(/^\d{8}$/)) {
+					alert("用户名不合法");
+					document.getElementById("account").focus();
+					return false;
+				}
+				if (!document.getElementById("password").value.match(/^\w{6,15}$/)) {
+					alert("密码长度不符合");
+					document.getElementById("password").focus();
+					return false;
+				}
+				return true;
+			}
+		</script>
+	</body>
+
+</html>

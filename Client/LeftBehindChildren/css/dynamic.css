@@ -1,0 +1,78 @@
+.mui-pull-right img{
+	width: 38px;
+	height: 38px;
+	margin-top: -5px;
+}
+.mui-pull-left img{
+	width: 22px;
+	height: 22px;
+	margin-left: 15px;
+}
+.end{
+	text-align: center;
+}
+#reply{
+	width: 500px;
+	position: absolute;
+	height: 35px;
+	float: left;
+	border-radius: 15px;
+}
+.sure{
+	height: 35px;
+	margin-left: 502px;
+}
+.avatar{
+	width: 50px;
+}
+.avatar img{
+	margin-top: 13px;
+	width: 45px;
+	height: 45px;
+	vertical-align: middle;
+	border-style: none;
+	border-radius: 50%;
+}
+.chat{
+	width: 100%;
+	height: 15px;
+}
+.chat img{
+	float: right;
+	margin-right: 10px;
+	width: 15px;
+	height: 15px;
+}
+.word,.userInfo{
+	font-size: 12px;
+}
+.user{
+	font-size: 10px;
+	color: #1E90FF;
+}
+.other{
+	width: 150px;
+	height: 48px;
+	margin: -45px auto auto 55px;
+}
+.describe{
+	font-family: "agency fb";
+	font-size: 13px;
+}
+.pic img{
+	width: 99.8%;
+	height: 300px;
+}
+.customreply{
+	font-size: 8px;
+	line-height: 0px;
+	margin-top: -12px;
+}
+#custominput{
+	position: relative;
+	margin-top: 0px;
+	line-height: 15px;
+	font-size: 11px;
+	height: 16px;
+	text-align: match-parent;
+}

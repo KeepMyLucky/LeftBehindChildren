@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.css" rel="stylesheet" />
+		<style type="text/css">
+			.tips{
+				font-size: 20px;
+				/* font-weight: bold; */
+			}
+			#examtype,#classin,#stuname,#chinese,#math,#engilish{
+				width: 200px;
+				height: 25px;
+				font-size: 20px;
+				margin-bottom: 8px;
+				padding: 8px 7px;
+				text-align: center;
+			}
+			#yeah{
+				position: relative;
+				margin-top: -15px;
+				width: 100%;
+				height: 35px;
+			}
+			.mui-content{
+				margin-top: 15px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">学生个人成绩添加</h1>
+		</header>
+		<div class="mui-content">
+			<label class="tips">考试类型:</label><input id="examtype" placeholder="XX考试" class="specific" type="text" /><br />
+			<label class="tips">所在班级:</label><input id="classin" placeholder="XX年级XX班" class="specific" type="text" /><br />
+			<label class="tips">学生姓名:</label><input id="stuname" placeholder="2~7个汉字" class="specific" type="text" /><br />
+			<label class="tips">语文成绩:</label><input id="chinese" placeholder="0~100整数" class="specific" type="number" /><br />
+			<label class="tips">数学成绩:</label><input id="math" placeholder="0~100整数" class="specific" type="number" /><br />
+			<label class="tips">英语成绩:</label><input id="engilish" placeholder="0~100整数" class="specific" type="number" /><br />
+			<label class="tips">教师寄语:</label><textarea id="teachersay" class="teachersay"></textarea>
+			<button id="yeah" type="button">确认提交</button>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			function checkInput() {
+				if (!document.getElementById("examtype").value.match(/^([\u4e00-\u9fa5]){2,7}$/)) {
+					alert("考试类型输入有误");
+					document.getElementById("examtype").focus();
+					return false;
+				}
+				if (!document.getElementById("classin").value.match(/^([\u4e00-\u9fa5]){2,7}$/)) {
+					alert("所在班级输入有误");
+					document.getElementById("classin").focus();
+					return false;
+				}
+				if (!document.getElementById("stuname").value.match(/^([\u4e00-\u9fa5]){2,7}$/)) {
+					alert("学生姓名输入有误");
+					document.getElementById("stuname").focus();
+					return false;
+				}
+				if (!document.getElementById("chinese").value.match(/^([1-9]|[1-9][0-9]|(100))$/)) {
+					alert("语文成绩输入有误");
+					document.getElementById("chinese").focus();
+					return false;
+				}
+				if (!document.getElementById("math").value.match(/^([1-9]|[1-9][0-9]|(100))$/)) {
+					alert("数学成绩输入有误");
+					document.getElementById("math").focus();
+					return false;
+				}
+				if (!document.getElementById("engilish").value.match(/^([1-9]|[1-9][0-9]|(100))$/)) {
+					alert("英语成绩输入有误");
+					document.getElementById("engilish").focus();
+					return false;
+				}
+				if (document.getElementById("teachersay").value.match(/(^\s*)|(\s*$)/g, '') == '') {
+					alert("教师评语不能为空");
+					document.getElementById("teachersay").focus();
+					return false;
+				}
+				return true;
+			}
+			function createRandomId() {
+				return (Math.random() * 10000000).toString(10).substr(0, 6);
+			}
+			document.getElementById("yeah").addEventListener('tap', function() {
+				var state = checkInput();
+				if (state == true) {
+						var scoreid = createRandomId();
+						var examtype = document.getElementById("examtype").value;
+						var classin = document.getElementById("classin").value;
+						var stuname = document.getElementById("stuname").value;
+						var chinese = document.getElementById("chinese").value;
+						var math = document.getElementById("math").value;
+						var english = document.getElementById("engilish").value;
+						var teachersay = document.getElementById("teachersay").value;
+						var link=localStorage.getItem("link");
+						mui.ajax(link+'/Score/addInfo.do', {
+							data: {
+								id: scoreid,
+								examtype: examtype,
+								classin: classin,
+								stuname: stuname,
+								chinese: chinese,
+								math: math,
+								english: english,
+								teachersay: teachersay
+							},
+							dataType: 'json',
+							type: 'post',
+							timeout: 5000,
+							success: function(data) {
+								if (data.code == 1) {
+									mui.toast("添加成绩报告单成功");
+								} else {
+									mui.toast("添加成绩报告单失败");
+								}
+							},
+							error: function(xhr, type, errorThrown) {
+								console.log(type);
+								mui.toast("其他错误");
+							}
+						})
+				} else {
+					mui.toast("添加成绩报告单失败");
+				}
+			})
+		</script>
+	</body>
+
+</html>

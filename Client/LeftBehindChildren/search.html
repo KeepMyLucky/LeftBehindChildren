@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/search.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">寻找</h1>
+		</header>
+		<div class="mui-content">
+			<input id="search" type="txet" />
+			<button id="start">开始找寻</button>
+			<ul id="ul" class="mui-table-view">
+				<li class="mui-table-view-cell mui-hidden">cared
+					<div id="M_Toggle" class="mui-switch mui-active">
+						<div class="mui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="#">
+						<img class="mui-media-object mui-pull-right" src="http://dcloudio.github.io/mui/assets/img/shuijiao.jpg">
+						<div class="mui-media-body">
+							幸福
+							<p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="#">
+						<img class="mui-media-object mui-pull-right" src="http://dcloudio.github.io/mui/assets/img/muwu.jpg">
+						<div class="mui-media-body">
+							木屋
+							<p class='mui-ellipsis'>想要这样一间小木屋，夏天挫冰吃瓜，冬天围炉取暖.</p>
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="#">
+						<img class="mui-media-object mui-pull-right" src="http://dcloudio.github.io/mui/assets/img/cbd.jpg">
+						<div class="mui-media-body">
+							CBD
+							<p class='mui-ellipsis'>烤炉模式的城，到黄昏，如同打翻的调色盘一般.</p>
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media">
+					<a href="#">
+						<img class="mui-media-object mui-pull-right" src="http://dcloudio.github.io/mui/assets/img/yuantiao.jpg">
+						<div class="mui-media-body">
+							远眺
+							<p class='mui-ellipsis'>静静的看这个世界，最后终于疯了</p>
+						</div>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			document.getElementById("start").addEventListener('tap', function() {
+				var searchkey = document.getElementById("search").value;alert(searchkey);
+				var link = localStorage.getItem("link");
+				var dynamicImg_path = link + "/imgs/dynamic/";
+				mui.ajax(link + '/Dynamic/searchkey.do', {
+					data: {
+						searchkey: searchkey,
+					},
+					async: true,
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 5000, //超时时间设置为10秒；
+					success: function(data) {
+						if (data.code == 1) {
+							var html='';
+							mui.each(data.dynamics, function(index, item) {
+									html+='<li class="mui-table-view-cell mui-media">'+
+									'<a href="#">'+
+									'<img class="mui-media-object mui-pull-right" src="' + dynamicImg_path + item.pic + '" />'+
+									'<div class="mui-media-body">'+item.uid+
+									'<p class="mui-ellipsis">'+item.details+'</p>'+
+									'</div>'+
+									'</a>'+
+									'</li>';
+							})
+							ul.innerHTML=html;
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+						mui.toast("获取数据失败");
+					}
+
+				})
+			})
+		</script>
+	</body>
+
+</html>

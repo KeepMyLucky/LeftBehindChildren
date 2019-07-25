@@ -1,0 +1,616 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/dynamic.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">查看动态</h1>
+			<a id="myDynamic" class="mui-icon mui-pull-left"><img src="img/myDynamic.png" /></a>
+			<a id="addDynamic" class="mui-icon mui-pull-right"><img src="img/add.png" /></a>
+		</header>
+		<div class="mui-content">
+			<div id="everything">
+
+				<!-- <div class="avatar">
+					<img src="img/cbd.jpg" />
+				</div>
+				<div class="other">
+					<span class="word">郑成</span>
+					<br />
+					<span class="word">2018-10-18 12:18</span>
+				</div>
+				<div class="details">
+					<p class="describe">在我们实习的过程中，一开始接触的就是人力资源部，人资帮我们办理入职，带领我们了解酒厂的环境以及各个生产车间。虽然我们没有真正的在人力资源部实习过，但是似乎我们许多东西都会跟它发生点千丝万缕的联系。在与人力资源部接触的经历中，让我印象最深刻的就是上课培训，在张丽姐与曾瑶姐的带领下，我们先后学习了公司的企业文化、规章制度、生产工艺流程、公文写作等相关课程，在那些课程的学习之下，我们对公司有了一个大致的了解，这对以后到车间实习打下了基础。在与人力资源部接触中，感受人资部门人员的那种亲和力以及高管理能力。我们有说有笑，感觉我们就是一家人，感觉到了家的温暖，在思想上，我们已在向四特慢慢的靠拢；在行动上，我们慢慢的跟着领导的步伐，一步一步的前进。</p>
+				</div>
+				<div class="pic">
+					<img src="img/yuantiao.jpg" />
+				</div>
+				<div class="chat">
+					<img src="img/comment.png" />
+				</div>
+				<div id="comment">
+					<span class="word" id="hello">小明:今天心情好&nbsp;2018-10-18 12:18</span>
+					<br />
+					<span class="word">小李回复小明:今天心情好&nbsp;2018-10-18 12:18</span>
+				</div> -->
+
+			</div>
+			<hr />
+			<p class="end">被你看到我的底线了，啊哦</p>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/zepto.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+				pullRefresh: {
+					container: ".mui-content", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					down: {
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+						height: '50px', //可选,默认50px.下拉刷新控件的高度,
+						range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+						offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+						auto: true, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh, //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					}
+				},
+			});
+			
+			//触发刷新事件
+			window.addEventListener('refresh', function(e){//执行刷新
+			  location.reload();
+			});
+			
+			document.getElementById("addDynamic").addEventListener('tap', function() {
+
+				mui.openWindow({
+					url: 'publishDynamic.html',
+					id: 'publishDynamic',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+
+			});
+			
+			document.getElementById("myDynamic").addEventListener('tap', function() {
+			
+				mui.openWindow({
+					url: 'myDynamic.html',
+					id: 'myDynamic',
+					show: {
+						autoShow: true, //页面loaded事件发生后自动显示，默认为true
+						aniShow: 'slide-in-right', //页面显示动画，默认为”slide-in-right“；
+					},
+					waiting: {
+						autoShow: true, //自动显示等待框，默认为true
+						title: '正在加载中...', //等待对话框上显示的提示内容
+						options: {
+							width: '100px', //等待框背景区域宽度，默认根据内容自动计算合适宽度
+							height: '100px', //等待框背景区域高度，默认根据内容自动计算合适高度
+						}
+					}
+				})
+			
+			});
+
+			function pulldownRefresh() {
+				setTimeout(function() {
+					addData();
+					mui('.mui-content').pullRefresh().endPulldown();
+					mui.toast("刷新成功");
+				}, 1500);
+			}
+
+			mui(document.body).on('tap', '.delicon', function(e) {
+				var did = this.getAttribute("did");
+				var btnArray = ['否', '是'];
+				mui.confirm('删除该动态，确认？', '删除', btnArray, function(e) {
+					if (e.index == 1) {
+						var link = localStorage.getItem("link");
+						//info.innerText = '你刚确认MUI是个好框架';
+						mui.ajax(link + '/Dynamic/del.do', {
+							data: {
+								did: did,
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: function(data) {
+
+							},
+							error: function(xhr, type, errorThrown) {
+
+							}
+						});
+						mui.ajax(link + '/Comment/delByDid.do', {
+							data: {
+								did: did,
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: function(data) {
+
+							},
+							error: function(xhr, type, errorThrown) {
+
+							}
+						});
+						mui.ajax(link + '/Reply/delByDid.do', {
+							data: {
+								did: did,
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: function(data) {
+
+							},
+							error: function(xhr, type, errorThrown) {
+
+							}
+						});
+
+						var delDynamic = document.getElementById(did);
+						$(delDynamic).remove();
+
+					} else {
+						//info.innerText = 'MUI没有得到你的认可，继续加油'
+					}
+				})
+
+			});
+
+			mui(document.body).on('tap', '.commenticon', function(e) {
+				var imgId = this.getAttribute("did");
+				var did = this.getAttribute("did");
+				var timestamp = getDate();
+				var btnArray = ['取消', '确定'];
+				mui.prompt('请输入评论内容：', '', '评论', btnArray, function(e) {
+					if (e.index == 1) {
+						//alert("我" + "评论" + ":" + e.value);
+						var link = localStorage.getItem("link");
+						var randomrid = createRandomCommentId();
+						var uid = localStorage.getItem("uid");
+						var details = e.value;
+						mui.ajax(link + '/Comment/addInfo.do', {
+							data: {
+								cid: randomrid,
+								did: did,
+								uid: uid,
+								details: details,
+								timestamp: timestamp
+							},
+							dataType: 'json', //服务器返回json格式数据
+							type: 'post', //HTTP请求类型
+							timeout: 10000, //超时时间设置为10秒；
+							success: function(data) {
+								var html = '';
+								html += '<span class="word" id=' + uid + randomrid + ' did=' + did + ' name=' + randomrid +
+									' kind="comment" uid=' + uid + ' nickname="我" cid=' + randomrid +
+									'>' + '<span class="user">' + "我" + '</span>' + " : " + '&nbsp;' + details + '&nbsp;' + timestamp +
+									'<br>' + '</span>'
+								$("#" + imgId + "").append(html);
+							},
+							error: function(xhr, type, errorThrown) {
+
+							}
+						});
+
+					} else {
+						mui.toast("你点了取消按钮");
+					}
+				})
+
+			});
+			mui(document.body).on('tap', '.word', function(e) {
+				//当前对象直接就是--->this
+				var randomrid = createRandomReplyId();
+				var rid = this.getAttribute("rid");
+				var cid = this.getAttribute("cid");
+				var cuid = this.getAttribute("uid");
+				//alert(cuid);
+				var kind = this.getAttribute("kind");
+				var replyid = this.getAttribute("id");
+				var delid = this.getAttribute("name");
+				var nickname = this.getAttribute("nickname");
+				var imgId = this.getAttribute("did");
+				var timestamp = getDate();
+				if (cuid == localStorage.getItem("uid")) {
+					var btnArray = [{
+						title: "回复"
+					}, {
+						title: "删除"
+					}];
+					plus.nativeUI.actionSheet({
+						title: "选项",
+						cancel: "取消",
+						buttons: btnArray
+					}, function(e) {
+						var index = e.index;
+						var text = "你刚点击了\"";
+						switch (index) {
+							case 0:
+								text += "取消";
+								break;
+							case 1:
+								var btnArray = ['取消', '确定'];
+								mui.prompt('请输入回复内容：', '@' + nickname, '回复', btnArray, function(e) {
+									if (e.index == 1) {
+										//alert(localStorage.getItem("uid") + "回复" + cuid + ":" + e.value);
+										var replycontent = e.value;
+										var ruid = localStorage.getItem("uid");
+										var link = localStorage.getItem("link");
+										mui.ajax(link + '/Reply/addInfo.do', {
+											data: {
+												rid: randomrid,
+												cid: cid,
+												uid: cuid,
+												ruid: ruid,
+												replycontent: replycontent,
+												timestamp: timestamp
+											},
+											dataType: 'json', //服务器返回json格式数据
+											type: 'post', //HTTP请求类型
+											timeout: 10000, //超时时间设置为10秒；
+											success: function(data) {
+												var html = '';
+												html += '<span class="word" id=' + ruid + rid + ' did=' + imgId + ' name=' + cid +
+													' kind="reply" uid=' + cuid + ' rid=' + randomrid + ' cid=' + cid +
+													'>' + '<span class="user">' + "我" + '</span>' + "回复" + '<span class="user">' + nickname +
+													'</span>' + ":" + '&nbsp;' + replycontent + '&nbsp;' +
+													timestamp + '<br>' + '</span>';
+												$("#" + imgId + "").append(html);
+											},
+											error: function(xhr, type, errorThrown) {
+												alert(errorThrown);
+											}
+										});
+									} else {
+										//info.innerText = '你点了取消按钮';
+									}
+								})
+								text += "回复";
+								break;
+							case 2:
+								var btnArray = ['否', '是'];
+								mui.confirm('删除该评论，确认？', '删除', btnArray, function(e) {
+									if (e.index == 1) {
+										var link = localStorage.getItem("link");
+										//info.innerText = '你刚确认MUI是个好框架';
+										if (kind == "comment") {
+											mui.ajax(link + '/Comment/del.do', {
+												data: {
+													cid: cid,
+												},
+												dataType: 'json', //服务器返回json格式数据
+												type: 'post', //HTTP请求类型
+												timeout: 10000, //超时时间设置为10秒；
+												success: function(data) {
+													$("[name='" + delid + "']").remove();
+												},
+												error: function(xhr, type, errorThrown) {
+
+												}
+											});
+
+											mui.ajax(link + '/Reply/delByCid.do', {
+												data: {
+													cid: cid,
+												},
+												dataType: 'json', //服务器返回json格式数据
+												type: 'post', //HTTP请求类型
+												timeout: 10000, //超时时间设置为10秒；
+												success: function(data) {
+
+												},
+												error: function(xhr, type, errorThrown) {
+
+												}
+											});
+
+										} else {
+											mui.ajax(link + '/Reply/del.do', {
+												data: {
+													rid: rid,
+												},
+												dataType: 'json', //服务器返回json格式数据
+												type: 'post', //HTTP请求类型
+												timeout: 10000, //超时时间设置为10秒；
+												success: function(data) {
+													$("#" + replyid + "").remove();
+												},
+												error: function(xhr, type, errorThrown) {
+
+												}
+											});
+										}
+									} else {
+										//info.innerText = 'MUI没有得到你的认可，继续加油'
+									}
+								})
+								text += "删除";
+								break;
+						}
+						//info.innerHTML = text+"\"按钮";
+					});
+				} else {
+					var btnArray = ['取消', '确定'];
+					mui.prompt('请输入回复内容：', '@' + nickname, '回复', btnArray, function(e) {
+						if (e.index == 1) {
+							//alert(localStorage.getItem("uid") + "回复" + cuid + ":" + e.value);
+							var replycontent = e.value;
+							var ruid = localStorage.getItem("uid");
+							var link = localStorage.getItem("link");
+							mui.ajax(link + '/Reply/addInfo.do', {
+								data: {
+									rid: randomrid,
+									cid: cid,
+									uid: cuid,
+									ruid: ruid,
+									replycontent: replycontent,
+									timestamp: timestamp
+								},
+								dataType: 'json', //服务器返回json格式数据
+								type: 'post', //HTTP请求类型
+								timeout: 10000, //超时时间设置为10秒；
+								success: function(data) {
+									var html = '';
+									html += '<span class="word" id=' + ruid + rid + ' did=' + imgId + ' name=' + cid +
+										' kind="reply" uid=' + cuid + ' rid=' + randomrid + ' cid=' + cid +
+										'>' + '<span class="user">' + "我" + '</span>' + "回复" + '<span class="user">' + nickname +
+										'</span>' + ":" + '&nbsp;' + replycontent + '&nbsp;' +
+										timestamp + '<br>' + '</span>';
+									$("#" + imgId + "").append(html);
+								},
+								error: function(xhr, type, errorThrown) {
+									alert(errorThrown);
+								}
+							});
+						} else {
+							//info.innerText = '你点了取消按钮';
+						}
+					})
+				}
+
+
+			});
+
+			function getDate() {
+				var date = new Date();
+				return date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + ":" + date
+					.getMinutes() + ":" + date.getSeconds();
+			}
+
+			function createRandomCommentId() {
+				return (Math.random() * 10000000).toString(16).substr(0, 5) + '-' + (new Date()).getTime() + '-' + Math.random()
+					.toString().substr(2, 4);
+			}
+
+			function createRandomReplyId() {
+				return (Math.random() * 10000000).toString(16).substr(0, 5) + '-' + (new Date()).getTime() + '-' + Math.random()
+					.toString().substr(2, 5);
+			}
+
+			var currentUser = localStorage.getItem("uid");
+			var link = localStorage.getItem("link");
+
+			function addData() {
+				mui.ajax(link + '/Dynamic/getAll.do', {
+					data: {
+
+					},
+					async: false,
+					dataType: 'json',
+					type: 'post',
+					timeout: 5000,
+					success: function(data) {
+						if (data.code == 1) {
+							mui.toast("获取数据成功");
+							var userImg, username, commentername;
+							var userImg_path = link + "/imgs/user/";
+							var dynamicImg_path = link + "/imgs/dynamic/";
+							var html = '';
+							mui.each(data.dynamics, function(index, item) {
+								//获取用户头像
+								mui.ajax(link + '/User/modify.do', {
+									data: {
+										id: item.uid,
+									},
+									async: false,
+									dataType: 'json', //服务器返回json格式数据
+									type: 'post', //HTTP请求类型
+									timeout: 10000, //超时时间设置为10秒；
+									success: function(data) {
+										if (data.code == 1) {
+											userImg = data.user.avatar;
+											username = data.user.username;
+										}
+									},
+									error: function(xhr, type, errorThrown) {
+										console.log(type);
+										mui.toast("获取数据失败");
+									}
+								});
+								//获取留言
+								mui.ajax(link + '/Comment/modifyAll.do', {
+									data: {
+										did: item.did,
+									},
+									async: true,
+									dataType: 'json',
+									type: 'post',
+									timeout: 5000,
+									success: function(data) {
+										if (data.code == 1) {
+											var html = '';
+											mui.each(data.comments, function(index, item) {
+												//获取用户名
+												mui.ajax(link + '/User/modify.do', {
+													data: {
+														id: item.uid,
+													},
+													async: false,
+													dataType: 'json', //服务器返回json格式数据
+													type: 'post', //HTTP请求类型
+													timeout: 10000, //超时时间设置为10秒；
+													success: function(data) {
+														if (data.code == 1) {
+															commentername = data.user.username;
+														}
+													},
+													error: function(xhr, type, errorThrown) {
+														console.log(type);
+														mui.toast("获取数据失败");
+													}
+												});
+												if (item.uid == currentUser) {
+													commentername = "我";
+												}
+												html += '<span class="word" id=' + item.uid + item.cid + ' did=' + item.did + ' name=' + item.cid +
+													' kind="comment" uid=' + item.uid + ' nickname=' + commentername + ' cid=' + item.cid +
+													'>' + '<span class="user">' + commentername + '</span>' + ":" + '&nbsp;' + item.details +
+													'&nbsp;' + item.timestamp + '<br>' + '</span>'
+												//获取回复
+												mui.ajax(link + '/Reply/modifyAll.do', {
+													data: {
+														cid: item.cid,
+													},
+													async: false,
+													dataType: 'json',
+													type: 'post',
+													timeout: 10000,
+													success: function(data) {
+														mui.each(data.replys, function(index, item) {
+															//获取回复用户名
+															var replyername;
+															mui.ajax(link + '/User/modify.do', {
+																data: {
+																	id: item.uid,
+																},
+																async: false,
+																dataType: 'json', //服务器返回json格式数据
+																type: 'post', //HTTP请求类型
+																timeout: 10000, //超时时间设置为10秒；
+																success: function(data) {
+																	if (data.code == 1) {
+																		replyername = data.user.username;
+																	}
+																},
+																error: function(xhr, type, errorThrown) {
+																	console.log(type);
+																	mui.toast("获取数据失败");
+																}
+															});
+															//获取再回复用户名
+															var rreplyername;
+															mui.ajax(link + '/User/modify.do', {
+																data: {
+																	id: item.ruid,
+																},
+																async: false,
+																dataType: 'json', //服务器返回json格式数据
+																type: 'post', //HTTP请求类型
+																timeout: 10000, //超时时间设置为10秒；
+																success: function(data) {
+																	if (data.code == 1) {
+																		rreplyername = data.user.username;
+																	}
+																},
+																error: function(xhr, type, errorThrown) {
+																	console.log(type);
+																	mui.toast("获取数据失败");
+																}
+															});
+															if (item.ruid == currentUser) {
+																rreplyername = "我";
+															}
+															if (item.uid == currentUser) {
+																replyername = "我";
+															}
+															html += '<span class="word" id=' + item.ruid + item.rid + ' did=' + item.did + ' name=' +
+																item.cid + ' kind="reply" uid=' + item.ruid + ' nickname=' + rreplyername + ' rid=' +
+																item.rid + ' cid=' + item.cid +
+																'>' + '<span class="user">' + rreplyername + '</span>' + "回复" + '<span class="user">' +
+																replyername + '</span>' + ":" + '&nbsp;' + item.replycontent + '&nbsp;' +
+																item.timestamp + '<br>' + '</span>'
+														});
+													},
+													error: function() {
+														mui.toast("加载失败");
+													}
+												})
+											});
+											$("#" + item.did + "").append(html);
+										}
+									},
+									error: function() {
+										mui.toast("加载失败");
+									}
+								});
+
+								html += '<div id=' + item.did + '>'
+								html += '<div class="avatar"><img src="' + userImg_path + userImg + '" />'
+								html += '</div>'
+								html += '<div class="other">'
+								html += '<span class="userInfo">'
+								html += username
+								html += '</span>'
+								html += '<br />'
+								html += '<span class="userInfo">'
+								html += item.timestamp
+								html += '</span>'
+								html += '</div>'
+								html += '<div class="details">'
+								html += '<p class="describe">'
+								html += item.details
+								html += '</p>'
+								html += '</div>'
+								html += '<div class="pic">'
+								html += '<img src="' + dynamicImg_path + item.pic + '" />'
+								html += '</div>'
+								html += '<div class="chat">'
+								html += '<img id="commentImg" class="commenticon" did=' + item.did + ' src="img/comment.png" />'
+								if (item.uid == localStorage.getItem("uid")) {
+									html += '<img class="delicon" did=' + item.did + ' src="img/del.png" />'
+								}
+								html += '</div>'
+								html += '<div id=' + item.did + '>'
+								html += '</div>'
+								html += '</div>'
+
+							});
+							everything.innerHTML = html;
+						} else {
+							mui.toast("获取数据失败");
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+						mui.toast("获取数据失败");
+					}
+				})
+
+			}
+		</script>
+	</body>
+</html>

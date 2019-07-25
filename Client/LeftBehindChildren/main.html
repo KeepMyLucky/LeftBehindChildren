@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<style type="text/css">
+			/*移除底部或顶部三角,需要在删除此代码*/
+			.mui-popover .mui-popover-arrow:after {
+				width: 0px;
+			}
+			.bookdetails{
+				position: relative;
+				display: block;
+				width: 100%;
+				height: 130px;
+				margin-top: 3px;
+				/* border: 1px solid; */
+			}
+			.bookface{
+				width: 30%;
+				display: block;
+				float: left;
+				position: relative;
+			}
+			.bookface img{
+				width: 100%;
+				height: 130px;
+				position: relative;
+			}
+			.bookother{
+				display: block;
+				width: 70%;
+				height: 130px;
+				/* border: 1px solid #007AFF; */
+				position: relative;
+				float: right;
+				background: #99FF99;
+			}
+			.booktag{
+				font-size: 12px;
+				font-weight: bold;
+				color: #007AFF;
+			}
+			.bookdesc{
+				font-size: 11px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav bg-color">
+			<h1 class="mui-title">首页</h1>
+		</header>
+		<div id="main" class="mui-content">
+				<div class="bookdetails">
+				    <div class="bookface"> <img src="img/cbd.jpg" /> </div>
+					<div class="bookother">
+						<span class="booktag">ISBN:</span>1008611<br />
+						<span class="booktag">书名:</span>从删库到跑路<br />
+						<span class="booktag">姓名:</span>郑成<br />
+						<span class="booktag">概述:</span>精彩有趣的故事不仅带给孩子想象与创造的空间，真实的历史更给孩子思考与判断的智慧，是一部让孩子认识自己、喜欢历史、见贤思齐的经典巨作
+					</div>
+				</div>
+			<!-- <div id="popover" class="mui-popover" style="height: 330px;">
+				<ul id="ul">
+					
+				</ul>
+			</div> -->
+		</div>
+		<!-- <div class="mui-content">
+			<ul class="mui-table-view mui-grid-view" id="ul">
+				<li class="mui-table-view-cell mui-media mui-col-xs-6">
+					<a>
+						<img class="mui-media-object" src="img/yuantiao.jpg">
+						<div class="mui-media-body">幸福就是可以一起睡觉</div>
+					</a>
+				</li>
+			</ul>
+		</div> -->
+	</body>
+	<script type="text/javascript">
+		mui.init({
+			pullRefresh: {
+				container: ".mui-content", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+				down: {
+					style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+					color: '#2BD009', //可选，默认“#2BD009” 下拉刷新控件颜色
+					height: '50px', //可选,默认50px.下拉刷新控件的高度,
+					range: '100px', //可选 默认100px,控件可下拉拖拽的范围
+					offset: '0px', //可选 默认0px,下拉刷新控件的起始位置
+					auto: true, //可选,默认false.首次加载自动上拉刷新一次
+					callback: pulldownRefresh, //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+				}
+			}
+		});
+		
+		mui(document.body).on('tap', '.mui-content ul li', function(e) {
+			//调用隐藏/显示弹出层    
+			mui("#popover").popover('toggle', document.getElementById("popover"));
+		})
+
+		function addData() {
+			var link = localStorage.getItem("link");
+			mui.ajax(link + '/Book/getAll.do', {
+				dataType: 'json',
+				type: 'post',
+				timeout: 5000,
+				success: function(data) {
+					var img_path = link + "/imgs/book/";
+					var html = '';
+					mui.each(data.books, function(index, item) {
+						html += '<div class="bookdetails">' + 
+						'<div class="bookface"> <img src="' + img_path + item.bookface + '" /></div>'+ 
+						'<div class="bookother">'+ 
+						'<span class="booktag">ISBN:</span>'+
+						'<span class="bookdesc">'+item.isbn+'</span>'+'<br />'+ 
+						'<span class="booktag">书名:</span>'+
+						'<span class="bookdesc">'+item.bookname+'</span>'+'<br />'+ 
+						'<span class="booktag">作者:</span>'+
+						'<span class="bookdesc">'+item.author+'</span>'+'<br />'+ 
+						'<span class="booktag">概述:</span>'+
+						'<span class="bookdesc">'+item.overview+'</sapn>'+
+				        '</div>'+ 
+						'</div>'+
+						'<br />';
+					});
+					main.innerHTML = html;
+				},
+				error: function() {
+					mui.toast("加载失败");
+				}
+			})
+		}
+
+		function pulldownRefresh() {
+			setTimeout(function() {
+				addData();
+				mui('.mui-content').pullRefresh().endPulldown();
+				mui.toast("刷新成功");
+			}, 1500);
+		}
+	</script>
+
+</html>

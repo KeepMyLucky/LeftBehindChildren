@@ -1,0 +1,25 @@
+.form-control{
+	width:95px;
+	height:30px;
+	margin:-31px 0px 11px 61px;
+}
+.searchVal{
+	width:45%;
+	float:left;
+}
+.btn-primary{
+	margin:-5px 0 0 0;
+	height:32px;
+	float:right;
+}
+a:hover{
+	cursor:pointer;
+	color:#6495ED;
+}
+.btn-primary,.btn-default{
+	height:34.8px;
+	margin:0 4px 0 0;
+}
+.In{
+	width:120px;
+}

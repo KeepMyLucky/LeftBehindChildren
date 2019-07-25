@@ -1,0 +1,15 @@
+#describe{
+	width: 98%;
+	height: 150px;
+	margin: 1%;
+	border-radius: 15px;
+}
+img{
+	width: 150px;
+	height: 130px;
+	margin: 1%;
+	border-radius: 10px;
+}
+#sub{
+	margin: 1%;
+}

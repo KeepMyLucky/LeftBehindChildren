@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/detail.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title" id="title"></h1>
+		</header>
+		<div class="mui-content">
+			<div id="info">
+				<div id="key"></div>
+				<textarea id="infor"></textarea>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			window.addEventListener("news", function(e) {
+				var updatekind = e.detail.id;
+				localStorage.setItem("updatekind", updatekind);
+				var title = e.detail.title;
+				if (updatekind == "loginusername") {
+					document.getElementById("title").innerText = "修改用户名";
+				}
+				if (updatekind == "loginuserpassword") {
+					document.getElementById("title").innerText = "修改密码";
+				}
+				var html = '';
+				html += '<textarea id="infor">';
+				html += title;
+				html += '</textarea>';
+				info.innerHTML = html;
+			});
+
+			document.getElementById("back").addEventListener('tap', function() {
+				var loginid = localStorage.getItem("uid");
+				var updatekind = localStorage.getItem("updatekind");
+				var infor = document.getElementById("infor").value;
+				var link = localStorage.getItem("link");
+				mui.ajax(link + '/User/updateUserByUid.do', {
+					data: {
+						uid: loginid,
+						updatekind: updatekind,
+						infor: infor,
+					},
+					dataType: 'json',
+					type: 'post',
+					timeout: 5000,
+					success: function(data) {
+						var msg = data;
+						if (msg.code == 1) {
+							mui.toast("修改成功");
+							mui.back();
+						} else {
+							alert("修改失败");
+						}
+					},
+					error: function(xhr, type, errorThrown) {
+						console.log(type);
+						alert("修改失败");
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

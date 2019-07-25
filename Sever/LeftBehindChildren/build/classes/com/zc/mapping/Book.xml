@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+ 
+
+<mapper namespace="com.zc.dao.BookDao" >
+
+  <resultMap id="BookMap" type="com.zc.model.Book" >
+
+    <id column="isbn" property="isbn" jdbcType="VARCHAR" />
+
+    <result column="bookname" property="bookname" jdbcType="VARCHAR" />
+
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    
+    <result column="bookface" property="bookface" jdbcType="VARCHAR" />
+    
+    <result column="overview" property="overview" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  
+
+  <sql id="Base_Column_List" >
+
+    isbn, bookname, author, bookface, overview
+
+  </sql>
+
+  
+
+  <select id="selectByPrimaryKey" resultMap="BookMap" parameterType="com.zc.model.Book" >
+
+    select 
+
+    <include refid="Base_Column_List" />
+
+    from book
+
+    where isbn = #{isbn}
+
+  </select>
+  
+  
+
+  <delete id="deleteByPrimaryKey" parameterType="com.zc.model.Book" >
+
+    delete from book
+
+    where isbn = #{isbn}
+
+  </delete>
+
+  
+
+  <insert id="insert" parameterType="com.zc.model.Book" keyProperty="isbn">
+
+    insert into book (isbn, bookname, author, bookface, overview)
+
+    values (#{isbn,jdbcType=VARCHAR}, #{bookname,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, #{bookface,jdbcType=VARCHAR}, #{overview,jdbcType=VARCHAR})
+
+  </insert>
+
+  
+
+  <insert id="insertSelective" parameterType="com.zc.model.Book" >
+
+    insert into book
+
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+    
+      <if test="isbn != null" >
+
+        isbn,
+
+      </if>
+      
+      <if test="bookname != null" >
+
+        bookname,
+
+      </if>
+      
+      <if test="author != null" >
+
+        author,
+
+      </if>
+      
+       <if test="bookface != null" >
+
+        bookface,
+
+      </if>
+      
+      <if test="overview != null" >
+
+        overview,
+
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    
+      <if test="isbn != null" >
+
+        #{isbn,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="bookname != null" >
+
+        #{bookname,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="author != null" >
+
+        #{author,jdbcType=VARCHAR},
+
+      </if>
+      
+       <if test="bookface != null" >
+
+        #{bookface,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="overview != null" >
+
+        #{overview,jdbcType=VARCHAR},
+
+      </if>
+    
+
+    </trim>
+
+  </insert>
+
+  
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zc.model.Book" >
+
+    update book
+
+    <set >
+
+      <if test="isbn != null" >
+
+        isbn = #{isbn,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="bookname != null" >
+
+        bookname = #{bookname,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="author != null" >
+
+        author = #{author,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="bookface != null" >
+
+        bookface = #{bookface,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="bookface != null" >
+
+        overview = #{overview,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where isbn = #{isbn}
+
+  </update>
+
+  
+
+  <update id="updateByPrimaryKey" parameterType="com.zc.model.Book" >
+
+    update book
+
+    set isbn = #{isbn,jdbcType=VARCHAR},
+
+        bookname = #{bookname,jdbcType=VARCHAR},
+        
+        author = #{author,jdbcType=VARCHAR},
+        
+        bookface = #{bookface,jdbcType=VARCHAR},
+        
+        overview = #{overview,jdbcType=VARCHAR},
+
+    where isbn = #{isbn}
+
+  </update>
+
+  
+
+  <select id="getAll" resultMap="BookMap">
+
+  	select * from book
+
+  </select>
+
+  
+
+</mapper>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+ 
+
+<mapper namespace="com.zc.dao.DynamicDao" >
+
+  <resultMap id="DynamicMap" type="com.zc.model.Dynamic" >
+
+    <id column="did" property="did" jdbcType="VARCHAR" />
+    
+    <id column="uid" property="uid" jdbcType="VARCHAR" />
+    
+    <result column="timestamp" property="timestamp" jdbcType="VARCHAR" />
+    
+    <result column="details" property="details" jdbcType="VARCHAR" />
+    
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
+
+  </resultMap>
+
+  
+
+  <sql id="Base_Column_List" >
+
+    did, uid, timestamp, details, pic
+
+  </sql>
+
+  
+
+  <select id="selectByPrimaryKey" resultMap="DynamicMap" parameterType="com.zc.model.Dynamic" >
+
+    select 
+
+    <include refid="Base_Column_List" />
+
+    from dynamic
+
+    where did = #{did}
+
+  </select>
+  
+  
+  <select id="selectByKeyWord" resultMap="DynamicMap" parameterType="com.zc.model.Dynamic" >
+
+    select 
+
+    <include refid="Base_Column_List" />
+
+    from dynamic
+
+    where details like concat(concat('%',#{searchkey},'%'))
+    
+    or
+    
+    uid like concat(concat('%',#{searchkey},'%'))
+
+  </select>
+  
+
+  
+
+  <delete id="deleteByPrimaryKey" parameterType="com.zc.model.Dynamic" >
+
+    delete from dynamic
+
+    where did = #{did}
+
+  </delete>
+
+  
+
+  <insert id="insert" parameterType="com.zc.model.Dynamic" keyProperty="id">
+
+    insert into dynamic (did, uid, timestamp, details, pic)
+
+    values (#{did,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR}, #{timestamp,jdbcType=VARCHAR},#{details,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR})
+
+  </insert>
+
+  
+
+  <insert id="insertSelective" parameterType="com.zc.model.Dynamic" >
+
+    insert into dynamic
+
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      
+      <if test="did != null" >
+
+        did,
+
+      </if>
+      
+      <if test="uid != null" >
+
+        uid,
+
+      </if>
+      
+      <if test="timestamp != null" >
+
+        timestamp,
+
+      </if>
+      
+      <if test="details != null" >
+
+        details,
+
+      </if>
+      
+      <if test="pic != null" >
+
+        pic,
+
+      </if>
+
+    </trim>
+
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+    
+      <if test="did != null" >
+
+        #{did,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="uid != null" >
+
+         #{uid,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="timestamp != null" >
+
+        #{timestamp,jdbcType=VARCHAR},
+
+      </if>
+      
+       <if test="details != null" >
+
+        #{details,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="pic != null" >
+
+         #{pic,jdbcType=VARCHAR},
+
+      </if>
+
+     </trim>
+
+  </insert>
+
+  
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.zc.model.Dynamic" >
+
+    update dynamic
+
+    <set >
+
+      <if test="did != null" >
+
+        did = #{did,jdbcType=VARCHAR},
+
+      </if>
+
+      <if test="timestamp != null" >
+
+        timestamp = #{timestamp,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="details != null" >
+
+        details = #{details,jdbcType=VARCHAR},
+
+      </if>
+      
+      <if test="pic != null" >
+
+        pic = #{pic,jdbcType=VARCHAR},
+
+      </if>
+
+    </set>
+
+    where did = #{did}
+
+  </update>
+
+  
+
+  <update id="updateByPrimaryKey" parameterType="com.zc.model.Dynamic" >
+
+    update dynamic
+
+    set timestamp = #{timestamp,jdbcType=VARCHAR},
+
+        details = #{details,jdbcType=VARCHAR},
+        
+        pic = #{pic,jdbcType=VARCHAR},
+
+    where did = #{did}
+
+  </update>
+
+   <select id="getmyDynamic" resultMap="DynamicMap">
+
+  	select * from dynamic
+  	
+  	where uid = #{uid}
+
+  </select>
+
+  <select id="getAll" resultMap="DynamicMap">
+
+  	select * from dynamic
+
+  </select>
+
+  
+
+</mapper>

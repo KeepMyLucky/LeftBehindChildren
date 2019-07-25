@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/publish.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">发表动态</h1>
+		</header>
+		<div class="mui-content">
+			<div>
+				<textarea id="describe"></textarea>
+			</div>
+			<div>
+				<img id="detail" src="img/sub.jpg" />
+			</div>
+			<button id="sub" type="button" class="mui-btn mui-btn-positive">开始发布</button>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				document.getElementById('detail').addEventListener('tap', function() {
+					if(mui.os.plus) {
+						var a = [{
+							title: '拍照'
+						}, {
+							title: '从手机相册选择'
+						}];
+						plus.nativeUI.actionSheet({
+							title: '选择图片',
+							cancel: '取消',
+							buttons: a
+						}, function(b) {
+							switch(b.index) {
+								case 0:
+									break;
+								case 1:
+									//拍照
+									getImages();
+									break;
+								case 2:
+									//打开相册
+									selectPicture();
+									break;
+								default:
+									break;
+							}
+						}, false);
+					}
+				});
+				//拍照
+				function getImages() {
+					var c = plus.camera.getCamera();
+					c.captureImage(function(e) {
+						plus.io.resolveLocalFileSystemURL(e, function(entry) {
+							var imgSrc = entry.toLocalURL(); //拿到图片路径
+							var detail = document.getElementById("detail");
+							detail.src = imgSrc;
+						}, function(e) {
+							console.log("读取拍照文件错误：" + e.message);
+						});
+					}, function(s) {
+						console.log("error" + s);
+					}, {
+						filename: "_doc/camera/"
+					})
+				}
+				// 从相册中选择图片 
+				function selectPicture() {
+					plus.gallery.pick(function(path) {
+						//alert("Success: " + path);
+						var detail = document.getElementById("detail");
+						detail.src = path;
+					}, function(err) {
+						alert("Failed: " + err.message);
+					});
+				}
+
+			});
+
+			// 创建上传任务
+			function createUpload(path) {
+				var did=createRandomDynamicId();
+				var timestamp=getDate();
+				var uid=localStorage.getItem("uid");
+				var details=document.getElementById("describe").value;
+				var link=localStorage.getItem("link");
+				var task = plus.uploader.createUpload(link+"/Dynamic/addInfo.do", {
+						method: "POST",
+						blocksize: 204800,
+						priority: 100
+					},
+					function(t, status) {
+						// 上传完成
+						if(status == 404) {
+							//alert("上传成功: " + t.url);
+							plus.nativeUI.closeWaiting();
+							next();
+						}
+// 						if(status == 200) {
+// 							alert("上传成功: " + t.url);
+// 						}
+						else {
+							alert("上传失败: " + status);
+						}
+					}
+				);
+				task.addFile(path, {
+					key: "pic.jpg"
+				});
+				task.addData("did",did);
+				task.addData("uid",uid);
+				task.addData("timestamp",timestamp);
+				task.addData("details",details);
+				task.start();
+				plus.nativeUI.showWaiting();
+			}
+
+			function getDate() {
+				var date = new Date();
+				return date.getFullYear() + "年" + (date.getMonth() + 1) + "月" + date.getDate() + "日" + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+			}
+			
+			function createRandomDynamicId() {
+				return (Math.random() * 10000000).toString(16).substr(0, 5) + '-' + (new Date()).getTime() + '-' + Math.random()
+					.toString().substr(2, 3);
+			}
+
+			function next() {
+				mui.toast("即将离开此页");
+				mui.back();
+			}
+			document.getElementById("sub").addEventListener('tap', function() {
+				createUpload(detail.src);
+			})
+		</script>
+	</body>
+
+</html>
